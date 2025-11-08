@@ -155,6 +155,16 @@ button:hover {
     <tr><td colspan="6" style="height: 90px;"></td></tr>
 </table>
 
+<!-- OBSERVACIONES / DETALLES DE MANTENIMIENTO -->
+<table>
+  <tr>
+    <th class="section-title">Observaciones / Detalles del mantenimiento</th>
+  </tr>
+  <tr>
+    <td id="manObservacionesText" style="height: 70px; white-space: pre-line;"></td>
+  </tr>
+</table>
+
 <!-- PRODUCTOS Y SERVICIOS -->
 <h2>PRODUCTOS Y SERVICIOS</h2>
 <table id="productosServicios">
@@ -252,6 +262,10 @@ if (reservaId) {
                 row.insertCell().textContent = m2?.valor || '';
             }
         }
+// OBSERVACIONES DE MANTENIMIENTO
+if (reserva.manObservaciones) {
+    document.getElementById('manObservacionesText').textContent = reserva.manObservaciones;
+}
 
         // PRODUCTOS Y SERVICIOS + TOTAL
         const tablaP = document.getElementById('productosServicios').rows;
