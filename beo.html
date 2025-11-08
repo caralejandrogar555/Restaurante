@@ -306,19 +306,7 @@ button.btn-danger:hover {
 <fieldset>
 <legend>Montaje (agregar múltiples)</legend>
 <div style="display:flex;gap:8px;align-items:center">
-  <select id="montajeTipo">
-    <option value="">— seleccionar montaje —</option>
-    <option>Mesas redondas para 9 personas c/u</option>
-    <option>Mantelería blanca</option>
-    <option>Cubre mantel azul/negro/dorado</option>
-    <option>Silla plástica con forro</option>
-    <option>Vaso para agua</option>
-    <option>Vaso para soda</option>
-    <option>Cubertería según menú</option>
-    <option>Decoración cliente la trae</option>
-    <option>Cliente trae bocina para música</option>
-    <option>Cliente trae café y cafetera</option>
-  </select>
+  <input id="montajeTipo" placeholder="Descripción del montaje">
   <input id="montajeCantidad" type="number" min="1" placeholder="Cant." style="width:110px">
   <button type="button" onclick="agregarMontaje()">Agregar</button>
 </div>
@@ -332,15 +320,7 @@ button.btn-danger:hover {
 <fieldset>
 <legend>Cocina</legend>
 <div style="display:flex;gap:8px;align-items:center">
-  <select id="cocinaTipo">
-    <option value="">— seleccionar item cocina —</option>
-    <option>Medallón de pollo 6oz albardado c/tocino</option>
-    <option>Salsa de alcaparras (sin limón)</option>
-    <option>Papa duchesa</option>
-    <option>Macedonia de vegetales diamantados</option>
-    <option>Panes</option>
-    <option>Vaso con soda</option>
-  </select>
+  <input id="cocinaTipo" placeholder="Descripción del ítem de cocina">
   <input id="cocinaCantidad" type="number" min="1" placeholder="Cant." style="width:110px">
   <button type="button" onclick="agregarCocina()">Agregar</button>
 </div>
@@ -376,6 +356,8 @@ button.btn-danger:hover {
 <!-- Mantenimiento -->
 <fieldset>
 <legend>Mantenimiento</legend>
+<label>Observaciones / Detalles del mantenimiento</label>
+<textarea id="manObservaciones" rows="3" placeholder="Escribe aquí las observaciones o notas relacionadas con el mantenimiento..."></textarea>
 <table id="tablaMantenimiento" class="table-small">
 <thead><tr><th>N. ing Caja</th><th>Fecha</th><th>Valor</th><th class="no-print">Acciones</th></tr></thead>
 <tbody></tbody>
@@ -434,51 +416,108 @@ function agregarProducto(){ const cod=document.getElementById('prodCodigo').valu
 
 function agregarMantenimiento(){ const n=document.getElementById('manN').value.trim(); const f=document.getElementById('manFecha').value; const v=document.getElementById('manValor').value; if(!n||!f||!v){alert('Llena N, Fecha y Valor para mantenimiento'); return;} const tbody=document.querySelector('#tablaMantenimiento tbody'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${n}</td><td>${f}</td><td>${parseFloat(v).toFixed(2)}</td>`; const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc); tbody.appendChild(tr); document.getElementById('manN').value=''; document.getElementById('manFecha').value=''; document.getElementById('manValor').value=''; }
 
-/* Guardar BEO */
-document.getElementById('beoForm').addEventListener('submit',function(ev){
-ev.preventDefault();
-const reserva={
-  id:String(contador).padStart(3,'0'),
-  fechaRegistro:document.getElementById('fechaRegistro').value,
-  fechaEvento:document.getElementById('fechaEvento').value,
-  horaInicio:document.getElementById('horaInicio').value,
-  horaFin:document.getElementById('horaFin').value,
-  salon:document.getElementById('salon').value,
-  tipoEvento:document.getElementById('tipoEvento').value,
-  facturarA:document.getElementById('facturarA').value,
-  telefono:document.getElementById('telefono').value,
-  numPersonas:document.getElementById('numPersonas').value,
-  nombreCartera:document.getElementById('nombreCartera').value,
-  codigo:document.getElementById('codigo').value,
-  contactoComercial:document.getElementById('contactoComercial').value,
-  contactoEvento:document.getElementById('contactoEvento').value,
-  telContacto:document.getElementById('telContacto').value,
-  responsablePago:document.getElementById('responsablePago').value,
-  dui:document.getElementById('dui').value,
-  nit:document.getElementById('nit').value,
-  noIva:document.getElementById('noIva').value,
-  ejecutivaVentas:document.getElementById('ejecutivaVentas').value,
-  telEjecutiva:document.getElementById('telEjecutiva').value,
-  celEjecutiva:document.getElementById('celEjecutiva').value,
-  montoReserva:parseFloat(document.getElementById('montoReserva').value)||0,
-  pagoAdelantado:parseFloat(document.getElementById('pagoAdelantado').value)||0,
-  montoPendiente:parseFloat(document.getElementById('montoPendiente').value)||0,
-  montaje:Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr=>({tipo:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
-  cocina:Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr=>({item:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
-  productos:Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr=>({codigo:tr.children[0].textContent,descripcion:tr.children[1].textContent,cantidad:tr.children[2].textContent,precio:tr.children[3].textContent,valor:tr.children[4].textContent})),
-  mantenimiento:Array.from(document.querySelectorAll('#tablaMantenimiento tbody tr')).map(tr=>({n:tr.children[0].textContent,fecha:tr.children[1].textContent,valor:tr.children[2].textContent})),
-  createdAt:new Date().toISOString()
-};
-const arr=getReservas();
-arr.push(reserva);
-setReservas(arr);
-contador++; localStorage.setItem('contadorBEO',contador);
-alert('BEO guardado correctamente.'); 
-beoForm.reset();
-document.getElementById('numReserva').value=String(contador).padStart(3,'0');
-calcularPendiente();
-});
+/* Guardar BEO con validación flexible */
+document.getElementById('beoForm').addEventListener('submit', function (ev) {
+  ev.preventDefault();
 
+  // Lista de campos que queremos validar (puedes agregar o quitar)
+  const camposObligatorios = [
+    'fechaRegistro',
+    'fechaEvento',
+    'horaInicio',
+    'horaFin',
+    'salon',
+    'tipoEvento',
+    'facturarA',
+    'telefono'
+  ];
+
+  let faltantes = [];
+  camposObligatorios.forEach(id => {
+    const campo = document.getElementById(id);
+    if (!campo.value.trim()) faltantes.push(id);
+  });
+
+  if (faltantes.length > 0) {
+    const nombres = faltantes.map(id => {
+      const label = document.querySelector(`label[for="${id}"]`)?.textContent || id;
+      return label;
+    }).join(', ');
+
+    const confirmar = confirm(
+      `⚠️ No has completado los siguientes campos: ${nombres}\n\n¿Deseas guardar de todos modos?`
+    );
+
+    if (!confirmar) {
+      document.getElementById(faltantes[0]).focus();
+      return;
+    }
+  }
+
+  // Crear objeto reserva
+  const reserva = {
+    id: String(contador).padStart(3, '0'),
+    fechaRegistro: document.getElementById('fechaRegistro').value,
+    fechaEvento: document.getElementById('fechaEvento').value,
+    horaInicio: document.getElementById('horaInicio').value,
+    horaFin: document.getElementById('horaFin').value,
+    salon: document.getElementById('salon').value,
+    tipoEvento: document.getElementById('tipoEvento').value,
+    facturarA: document.getElementById('facturarA').value,
+    telefono: document.getElementById('telefono').value,
+    numPersonas: document.getElementById('numPersonas').value,
+    nombreCartera: document.getElementById('nombreCartera').value,
+    codigo: document.getElementById('codigo').value,
+    contactoComercial: document.getElementById('contactoComercial').value,
+    contactoEvento: document.getElementById('contactoEvento').value,
+    telContacto: document.getElementById('telContacto').value,
+    responsablePago: document.getElementById('responsablePago').value,
+    dui: document.getElementById('dui').value,
+    nit: document.getElementById('nit').value,
+    noIva: document.getElementById('noIva').value,
+    ejecutivaVentas: document.getElementById('ejecutivaVentas').value,
+    telEjecutiva: document.getElementById('telEjecutiva').value,
+    celEjecutiva: document.getElementById('celEjecutiva').value,
+    montoReserva: parseFloat(document.getElementById('montoReserva').value) || 0,
+    pagoAdelantado: parseFloat(document.getElementById('pagoAdelantado').value) || 0,
+    montoPendiente: parseFloat(document.getElementById('montoPendiente').value) || 0,
+    montaje: Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr => ({
+      tipo: tr.children[0].textContent,
+      cantidad: tr.children[1].textContent
+    })),
+    cocina: Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr => ({
+      item: tr.children[0].textContent,
+      cantidad: tr.children[1].textContent
+    })),
+    productos: Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr => ({
+      codigo: tr.children[0].textContent,
+      descripcion: tr.children[1].textContent,
+      cantidad: tr.children[2].textContent,
+      precio: tr.children[3].textContent,
+      valor: tr.children[4].textContent
+    })),
+    mantenimiento: Array.from(document.querySelectorAll('#tablaMantenimiento tbody tr')).map(tr => ({
+      n: tr.children[0].textContent,
+      fecha: tr.children[1].textContent,
+      valor: tr.children[2].textContent
+    })),
+    manObservaciones: document.getElementById('manObservaciones').value,
+    manObservaciones: document.getElementById('manObservaciones').value || '',
+    createdAt: new Date().toISOString()
+  };
+
+  // Guardar reserva en localStorage
+  const arr = getReservas();
+  arr.push(reserva);
+  setReservas(arr);
+
+  // Incrementar contador
+  contador++;
+  localStorage.setItem('contadorBEO', contador);
+
+  alert('✅ BEO guardado correctamente.');
+  window.location.href = `formulario.html?id=${reserva.id}`;
+});
 // --- Calcular automáticamente el monto pendiente ---
 function calcularPendiente() {
   const monto = parseFloat(document.getElementById('montoReserva').value) || 0;
