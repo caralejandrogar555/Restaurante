@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reservaciones - Restaurante El Rodeo</title>
+<style>
+  /* === PALETA DE COLORES EL RODEO === */
+:root {
+  --rojo: #b11226;
+  --dorado: #ffd700;
+  --gris-fondo: #2a2a40;      /* fondo moradito elegante */
+  --gris-tabla: #35354a;      /* fondo de contenedor */
+  --gris-input: #3a3a5a;      /* inputs */
+  --blanco: #fff;
+  --verde: #28a745;
+  --naranja: #ff9800;
+}
+
+/* === ESTILOS GENERALES === */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 20px;
+  background: var(--gris-fondo);
+  color: var(--blanco);
+  line-height: 1.5;
+}
+
+/* === TÍTULO === */
+h1 {
+  color: var(--dorado);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* === Barra de búsqueda / filtros === */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--gris-tabla);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+}
+
+.toolbar input, .toolbar select {
+  padding: 7px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-right: 10px;
+  background: var(--gris-input);
+  color: var(--blanco);
+}
+
+.toolbar input::placeholder {
+  color: #ccc;
+}
+
+/* === Contenedor de tabla con scroll === */
+.tabla-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--gris-tabla);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* === Tabla === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1400px;
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid #555;
+}
+
+th {
+  background: var(--rojo);
+  color: var(--blanco);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+tr:nth-child(even) {
+  background: #383850;
+}
+
+tr:hover {
+  background: #4a4a6a;
+}
+
+/* === Botones modernos === */
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 2px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.btn-ver {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.btn-ver:hover {
+  background: #e6c200;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+.btn-imprimir {
+  background: var(--verde);
+  color: var(--blanco);
+}
+
+.btn-imprimir:hover {
+  background: #229954;
+}
+
+.btn-borrar {
+  background: #e74c3c;
+  color: var(--blanco);
+}
+
+.btn-borrar:hover {
+  background: #c0392b;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* === Modal / Recibo === */
+#recibo {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  overflow: auto;
+  padding: 50px 0;
+  z-index: 9999;
+}
+
+#contenidoRecibo {
+  background: var(--gris-tabla);
+  color: var(--blanco);
+  margin: 0 auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+#contenidoRecibo h2 {
+  margin-top: 0;
+  color: var(--dorado);
+}
+
+.btn-cerrar {
+  background: #ccc;
+  color: #000;
+  float: right;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.btn-cerrar:hover {
+  background: #aaa;
+}
+
+/* === MENÚ DE NAVEGACIÓN === */
+.menu-botones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.menu-botones button {
+  background: var(--dorado);       /* dorado principal */
+  color: var(--gris-fondo);        /* texto morado oscuro */
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* sombra elegante */
+}
+
+.menu-botones button:hover {
+  background: #e6c200;             /* dorado más intenso al hover */
+  transform: translateY(-2px) scale(1.05); /* efecto levitar + crecer */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4); /* sombra más grande */
+}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+
+<h1>RESERVACIONES GUARDADAS</h1>
+
+<!-- MENÚ DE NAVEGACIÓN -->
+<div class="menu-botones">
+  <button onclick="window.location.href='index.html'">INICIO</button>
+  <button onclick="window.location.href='reservaciones.html'">RESERVACIONES</button>
+  <button onclick="window.location.href='reporte.html'">REPORTE</button>
+  <button onclick="window.location.href='generar-beo.html'">GENERAR BEO</button>
+  <button onclick="window.location.href='formulario.html'">FORMULARIO</button>
+</div>
+
+<div class="toolbar">
+  <div>
+    🔍 <input type="text" id="buscar" placeholder="Buscar cliente o fecha...">
+  </div>
+  <div>
+    Ordenar por:
+    <select id="ordenarPor">
+      <option value="fechaEvento">Fecha del evento</option>
+      <option value="id">N° de Reserva</option>
+      <option value="facturarA">Cliente</option>
+    </select>
+  </div>
+</div>
+
+<div class="tabla-container">
+  <table id="tablaReservas">
+    <thead>
+  <tr>
+    <th>N°</th>
+    <th>Fecha registro</th>
+    <th>Cliente</th>
+    <th>Fecha evento</th>
+    <th>Hora inicio</th>
+    <th>Hora fin</th>
+    <th>Salón</th>
+    <th>Tipo</th>
+    <th>Monto reservación ($)</th>
+    <th>Pago adelantado ($)</th>
+    <th>Monto pendiente ($)</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Modal / Recibo -->
+<div id="recibo">
+  <div id="contenidoRecibo">
+    <button class="btn-cerrar" onclick="cerrarRecibo()">Cerrar</button>
+    <div id="previewContent"></div>
+    <div style="text-align:center; margin-top:10px;">
+      <button onclick="imprimirBEO()" class="btn-imprimir">Imprimir</button>
+      <button onclick="descargarBEO()" class="btn-ver">Descargar PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====================== Local Storage ======================
+function getReservas() {
+  const arr = JSON.parse(localStorage.getItem('reservas') || '[]');
+  // filtrar datos válidos
+  return arr.filter(r => r && r.id && r.facturarA);
+}
+function setReservas(arr) {
+  localStorage.setItem('reservas', JSON.stringify(arr));
+}
+
+// ====================== Renderizar tabla ======================
+function renderTablaReservas(filtro='') {
+  const tbody = document.querySelector('#tablaReservas tbody');
+  tbody.innerHTML = '';
+  const arr = getReservas();
+
+  const filtroLower = filtro.toLowerCase();
+  let filtradas = arr.filter(r =>
+    (r.facturarA || '').toLowerCase().includes(filtroLower) ||
+    (r.fechaEvento || '').toLowerCase().includes(filtroLower)
+  );
+
+  const criterio = document.getElementById('ordenarPor').value;
+  filtradas.sort((a,b)=>{
+    if(criterio === 'id') return (a.id||'').localeCompare(b.id||'');
+    if(criterio === 'facturarA') return (a.facturarA||'').localeCompare(b.facturarA||'');
+    if(criterio === 'fechaEvento') return (a.fechaEvento||'').localeCompare(b.fechaEvento||'');
+    return 0;
+  });
+
+  if (filtradas.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="11">No se encontraron reservaciones.</td></tr>`;
+    return;
+  }
+
+  filtradas.forEach(r=>{
+    const montoReserva = parseFloat(r.montoReserva)||0;
+    const pagoAdelantado = parseFloat(r.pagoAdelantado)||0;
+    const montoPendiente = montoReserva - pagoAdelantado;
+
+    const tr = document.createElement('tr');
+  tr.innerHTML = `
+  <td>${r.id}</td>
+  <td>${r.fechaRegistro || ''}</td>
+  <td>${r.facturarA || r.nombreCartera || ''}</td>
+  <td>${r.fechaEvento || ''}</td>
+  <td>${r.horaInicio || ''}</td>
+  <td>${r.horaFin || ''}</td>
+  <td>${r.salon || ''}</td>
+  <td>${r.tipoEvento || ''}</td>
+  <td>${montoReserva.toFixed(2)}</td>
+  <td>${pagoAdelantado.toFixed(2)}</td>
+  <td>${montoPendiente.toFixed(2)}</td>
+  <td class="actions">
+    <button class="btn-ver" onclick="verReserva('${r.id}')">Ver</button>
+    <button class="btn-imprimir" onclick="imprimirReserva('${r.id}')">Imprimir</button>
+    <button class="btn-borrar" onclick="borrarReserva('${r.id}')">Borrar</button>
+  </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ====================== Ver / Imprimir / Borrar ======================
+function verReserva(id){
+  const r = getReservas().find(x=>x.id===id);
+  if(!r){ alert('Reserva no encontrada'); return; }
+  document.getElementById('previewContent').innerHTML = buildBEOHtml(r);
+  document.getElementById('recibo').style.display='block';
+}
+function imprimirReserva(id){
+  const r = getReservas().find(x=>x.id===id);
+  if(!r){ alert('Reserva no encontrada'); return; }
+  const w = window.open('','_blank');
+  w.document.write(buildBEOHtml(r,true));
+  w.document.close(); w.focus(); w.print();
+}
+function borrarReserva(id){
+  if(!confirm('¿Borrar esta reserva?')) return;
+  let arr = getReservas().filter(x=>x.id!==id);
+  setReservas(arr);
+  renderTablaReservas(document.getElementById('buscar').value);
+}
+
+// ====================== Modal y PDF ======================
+function cerrarRecibo(){ document.getElementById('recibo').style.display='none'; }
+function imprimirBEO(){ window.print(); }
+function descargarBEO(){
+  const content = document.getElementById('previewContent').innerHTML;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.html(content,{callback:function(){doc.save('BEO.pdf');},x:10,y:10,html2canvas:{scale:0.95}});
+}
+
+// ====================== HTML del BEO ======================
+function buildBEOHtml(r, inline){
+  const montoReserva = parseFloat(r.montoReserva)||0;
+  const pagoAdelantado = parseFloat(r.pagoAdelantado)||0;
+  const pendiente = (montoReserva - pagoAdelantado).toFixed(2);
+
+  const html=`
+    <div style="font-family:Arial;color:#000;">
+      <h2>ORDEN DE TRABAJO (BEO)</h2>
+      <p><b>N° Reserva:</b> ${r.id}</p>
+      <p><b>Cliente:</b> ${r.facturarA||r.nombreCartera||''}</p>
+      <p><b>Fecha evento:</b> ${r.fechaEvento||''} ${r.horaInicio?'- '+r.horaInicio+' a '+r.horaFin:''}</p>
+      <p><b>Salón:</b> ${r.salon||''} | <b>Tipo:</b> ${r.tipoEvento||''}</p>
+      <p><b>Monto reservación:</b> $${montoReserva.toFixed(2)}</p>
+      <p><b>Pago adelantado:</b> $${pagoAdelantado.toFixed(2)}</p>
+      <p><b>Monto pendiente:</b> <b>$${pendiente}</b></p>
+    </div>`;
+  return inline? `<html><body>${html}</body></html>`:html;
+}
+
+// ====================== Eventos ======================
+document.getElementById('buscar').addEventListener('input', e=>{
+  renderTablaReservas(e.target.value);
+});
+document.getElementById('ordenarPor').addEventListener('change', ()=>{
+  renderTablaReservas(document.getElementById('buscar').value);
+});
+renderTablaReservas();
+</script>
+
+</body>
+</html>

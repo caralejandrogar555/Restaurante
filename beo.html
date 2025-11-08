@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Generar Beo - Restaurante El Rodeo</title>
+<link rel="stylesheet" href="estilos.css">
+<style>
+/* === PALETA DE COLORES EL RODEO === */
+:root {
+  --rojo: #b11226;
+  --dorado: #ffd700;
+  --gris-fondo: #2a2a40;
+  --gris-tabla: #35354a;
+  --gris-input: #3a3a5a;
+  --blanco: #fff;
+  --verde: #28a745;
+  --naranja: #ff9800;
+}
+
+/* === ESTILOS GENERALES === */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 20px;
+  background: var(--gris-fondo);
+  color: var(--blanco);
+  line-height: 1.5;
+}
+
+/* === ENCABEZADO === */
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  color: var(--dorado);
+  font-size: 2em;
+}
+
+/* === MENÚ DE BOTONES === */
+.menu-botones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.menu-botones button {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  border: none;
+  padding: 10px 18px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.menu-botones button:hover {
+  background: #e6c200;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* === CONTENEDOR PRINCIPAL === */
+.container {
+  width: 95%;
+  max-width: 1200px;
+  background: var(--gris-tabla);
+  margin: 0 auto 30px auto;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* === TÍTULOS === */
+h2 {
+  text-align: center;
+  color: var(--dorado);
+  margin-bottom: 20px;
+}
+
+/* === FORMULARIO === */
+form {
+  width: 100%;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-top: 6px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border: 1.5px solid #555;
+  border-radius: 6px;
+  font-size: 0.95em;
+  background: var(--gris-input);
+  color: var(--blanco);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #ccc;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--dorado);
+  outline: none;
+  box-shadow: 0 0 6px rgba(255,215,0,0.3);
+}
+
+/* === FILAS Y COLUMNAS === */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.col {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* === FIELDSETS === */
+fieldset {
+  border: 2px solid var(--dorado);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 20px;
+}
+
+legend {
+  color: var(--dorado);
+  font-weight: 700;
+  font-size: 1.1em;
+  padding: 0 10px;
+}
+
+/* === TABLAS === */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--gris-tabla);
+}
+
+th, td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #555;
+  text-align: center;
+  font-size: 0.95em;
+  color: var(--blanco);
+}
+
+th {
+  background: var(--rojo);
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background: #383850;
+}
+
+tr:hover {
+  background: #4a4a6a;
+}
+
+/* === BOTONES === */
+button.btn-primary {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+button.btn-primary:hover {
+  background: #e6c200;
+  transform: scale(1.05);
+}
+
+button.btn-danger {
+  background: #e74c3c;
+  color: var(--blanco);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button.btn-danger:hover {
+  background: #c0392b;
+}
+
+/* === ACCIONES === */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* === MODAL / PREVIEW === */
+#recibo {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  overflow: auto;
+  padding: 50px 0;
+  z-index: 9999;
+}
+
+#contenidoRecibo {
+  background: var(--gris-tabla);
+  color: var(--blanco);
+  margin: 0 auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+
+#contenidoRecibo h2 {
+  margin-top: 0;
+  color: var(--dorado);
+}
+
+/* === MODO IMPRESIÓN === */
+@media print {
+  .no-print { display: none !important; }
+  #recibo { position: static; transform: none; width: auto; height: auto; border: none; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Generar BEO - Orden de Evento</h2>
+
+<form id="beoForm">
+
+<!-- Datos generales -->
+<fieldset>
+<legend>Datos generales</legend>
+<div class="row">
+  <div class="col"><label>N° de Reserva</label><input id="numReserva" readonly></div>
+  <div class="col"><label>Fecha registro</label><input id="fechaRegistro" type="date" required></div>
+  <div class="col"><label>Fecha evento</label><input id="fechaEvento" type="date" required></div>
+</div>
+<div class="row">
+  <div class="col"><label>Hora inicio</label><input id="horaInicio" type="time" required></div>
+  <div class="col"><label>Hora fin</label><input id="horaFin" type="time" required></div>
+  <div class="col"><label>Salón</label><input id="salon" required></div>
+  <div class="col"><label>Tipo de evento</label><input id="tipoEvento" required></div>
+</div>
+</fieldset>
+
+<!-- Datos cliente -->
+<fieldset>
+<legend>Datos del cliente y responsable</legend>
+<div class="row">
+  <div class="col"><label>Facturar a nombre de</label><input id="facturarA" required></div>
+  <div class="col"><label>Teléfono</label><input id="telefono" required></div>
+  <div class="col"><label>N° Personas</label><input id="numPersonas" type="number" min="1"></div>
+</div>
+<div class="row">
+  <div class="col"><label>Nombre en cartera</label><input id="nombreCartera"></div>
+  <div class="col"><label>Código</label><input id="codigo"></div>
+  <div class="col"><label>Contacto comercial</label><input id="contactoComercial"></div>
+</div>
+<div class="row">
+  <div class="col"><label>Contacto en el evento</label><input id="contactoEvento"></div>
+  <div class="col"><label>Tel. contacto</label><input id="telContacto"></div>
+  <div class="col"><label>Responsable de pago</label><input id="responsablePago"></div>
+</div>
+<div class="row">
+  <div class="col"><label>DUI</label><input id="dui"></div>
+  <div class="col"><label>NIT</label><input id="nit"></div>
+  <div class="col"><label>No. IVA</label><input id="noIva"></div>
+  <div class="col"><label>Ejecutiva de ventas</label><input id="ejecutivaVentas"></div>
+</div>
+<div class="row">
+  <div class="col"><label>Tel. ejecutiva</label><input id="telEjecutiva"></div>
+  <div class="col"><label>Cel. ejecutiva</label><input id="celEjecutiva"></div>
+  <div class="col"></div>
+</div>
+</fieldset>
+
+<!-- Montaje dinámico -->
+<fieldset>
+<legend>Montaje (agregar múltiples)</legend>
+<div style="display:flex;gap:8px;align-items:center">
+  <select id="montajeTipo">
+    <option value="">— seleccionar montaje —</option>
+    <option>Mesas redondas para 9 personas c/u</option>
+    <option>Mantelería blanca</option>
+    <option>Cubre mantel azul/negro/dorado</option>
+    <option>Silla plástica con forro</option>
+    <option>Vaso para agua</option>
+    <option>Vaso para soda</option>
+    <option>Cubertería según menú</option>
+    <option>Decoración cliente la trae</option>
+    <option>Cliente trae bocina para música</option>
+    <option>Cliente trae café y cafetera</option>
+  </select>
+  <input id="montajeCantidad" type="number" min="1" placeholder="Cant." style="width:110px">
+  <button type="button" onclick="agregarMontaje()">Agregar</button>
+</div>
+<table id="tablaMontaje" class="table-small">
+  <thead><tr><th>Tipo</th><th>Cant.</th><th class="no-print">Acciones</th></tr></thead>
+  <tbody></tbody>
+</table>
+</fieldset>
+
+<!-- Cocina dinámica -->
+<fieldset>
+<legend>Cocina</legend>
+<div style="display:flex;gap:8px;align-items:center">
+  <select id="cocinaTipo">
+    <option value="">— seleccionar item cocina —</option>
+    <option>Medallón de pollo 6oz albardado c/tocino</option>
+    <option>Salsa de alcaparras (sin limón)</option>
+    <option>Papa duchesa</option>
+    <option>Macedonia de vegetales diamantados</option>
+    <option>Panes</option>
+    <option>Vaso con soda</option>
+  </select>
+  <input id="cocinaCantidad" type="number" min="1" placeholder="Cant." style="width:110px">
+  <button type="button" onclick="agregarCocina()">Agregar</button>
+</div>
+<table id="tablaCocina" class="table-small">
+<thead><tr><th>Item</th><th>Cant.</th><th class="no-print">Acciones</th></tr></thead>
+<tbody></tbody>
+</table>
+</fieldset>
+
+<!-- Montos y productos -->
+<fieldset>
+<legend>Montos / Productos y Servicios</legend>
+<div class="row">
+  <div class="col"><label>Monto por reservación ($)</label><input id="montoReserva" type="number" step="0.01" value="0"></div>
+  <div class="col"><label>Pago adelantado ($)</label><input id="pagoAdelantado" type="number" step="0.01" value="0"></div>
+  <div class="col"><label>Monto pendiente ($)</label><input id="montoPendiente" readonly></div>
+</div>
+
+<label>Productos y Servicios</label>
+<table id="tablaProductos" class="table-small">
+<thead><tr><th>Código</th><th>Descripción</th><th>Cantidad</th><th>Precio uni.</th><th>Valor</th><th class="no-print">Acciones</th></tr></thead>
+<tbody></tbody>
+</table>
+<div style="display:flex;gap:8px;margin-top:8px">
+<input id="prodCodigo" placeholder="Código">
+<input id="prodDesc" placeholder="Descripción">
+<input id="prodCant" type="number" placeholder="Cant." style="width:80px">
+<input id="prodPrecio" type="number" placeholder="Precio" style="width:110px">
+<button type="button" onclick="agregarProducto()">Agregar producto</button>
+</div>
+</fieldset>
+
+<!-- Mantenimiento -->
+<fieldset>
+<legend>Mantenimiento</legend>
+<table id="tablaMantenimiento" class="table-small">
+<thead><tr><th>N. ing Caja</th><th>Fecha</th><th>Valor</th><th class="no-print">Acciones</th></tr></thead>
+<tbody></tbody>
+</table>
+<div style="display:flex;gap:8px;margin-top:8px">
+<input id="manN" placeholder="N. ing" style="width:80px">
+<input id="manFecha" type="date" style="width:160px">
+<input id="manValor" placeholder="Valor" style="width:120px">
+<button type="button" onclick="agregarMantenimiento()">Agregar</button>
+</div>
+</fieldset>
+
+<div style="text-align:center; margin-top:15px;">
+  <button type="submit" class="btn-primary">Guardar y Generar BEO</button>
+</div>
+
+</form>
+</div>
+
+<script>
+const STORAGE_KEY='reservas';
+function getReservas(){ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }
+function setReservas(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+
+let contador = parseInt(localStorage.getItem('contadorBEO')||'1',10);
+document.getElementById('numReserva').value = String(contador).padStart(3,'0');
+
+/* Formatos */
+function formatTelefono(input){
+  input.addEventListener('input', ()=>{ let v=input.value.replace(/\D/g,''); if(v.length>4) v=v.slice(0,4)+'-'+v.slice(4,8); input.value=v; });
+}
+function formatDUI(input){
+  input.addEventListener('input', ()=>{ let v=input.value.replace(/\D/g,''); if(v.length>8) v=v.slice(0,8)+'-'+v.slice(8,9); input.value=v; });
+}
+
+['telefono','telContacto','telEjecutiva','celEjecutiva'].forEach(id=>formatTelefono(document.getElementById(id)));
+formatDUI(document.getElementById('dui'));
+
+/* Calcular pendiente */
+function calcularPendiente(){
+  const monto=parseFloat(document.getElementById('montoReserva').value)||0;
+  const pago=parseFloat(document.getElementById('pagoAdelantado').value)||0;
+  document.getElementById('montoPendiente').value=Math.max(0,monto-pago).toFixed(2);
+}
+['montoReserva','pagoAdelantado'].forEach(id=>document.getElementById(id).addEventListener('input',calcularPendiente));
+
+/* Función eliminar */
+function crearBotonEliminar(onclick){ const btn=document.createElement('button'); btn.textContent='Eliminar'; btn.type='button'; btn.onclick=onclick; return btn; }
+
+/* Agregar dinámico */
+function agregarMontaje(){ const tipo=document.getElementById('montajeTipo').value; const cant=parseInt(document.getElementById('montajeCantidad').value)||0; if(!tipo||cant<=0){alert('Selecciona tipo y cantidad válida'); return;} const tbody=document.querySelector('#tablaMontaje tbody'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`; const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc); tbody.appendChild(tr); document.getElementById('montajeTipo').value=''; document.getElementById('montajeCantidad').value=''; }
+
+function agregarCocina(){ const tipo=document.getElementById('cocinaTipo').value; const cant=parseInt(document.getElementById('cocinaCantidad').value)||0; if(!tipo||cant<=0){alert('Selecciona item y cantidad válida'); return;} const tbody=document.querySelector('#tablaCocina tbody'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`; const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc); tbody.appendChild(tr); document.getElementById('cocinaTipo').value=''; document.getElementById('cocinaCantidad').value=''; }
+
+function agregarProducto(){ const cod=document.getElementById('prodCodigo').value.trim(); const desc=document.getElementById('prodDesc').value.trim(); const cant=parseFloat(document.getElementById('prodCant').value)||0; const precio=parseFloat(document.getElementById('prodPrecio').value)||0; if(!desc||cant<=0||precio<=0){alert('Llena correctamente el producto'); return;} const val=(cant*precio).toFixed(2); const tbody=document.querySelector('#tablaProductos tbody'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${cod}</td><td>${desc}</td><td>${cant}</td><td>${precio.toFixed(2)}</td><td>${val}</td>`; const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc); tbody.appendChild(tr); document.getElementById('prodCodigo').value=''; document.getElementById('prodDesc').value=''; document.getElementById('prodCant').value=''; document.getElementById('prodPrecio').value=''; }
+
+function agregarMantenimiento(){ const n=document.getElementById('manN').value.trim(); const f=document.getElementById('manFecha').value; const v=document.getElementById('manValor').value; if(!n||!f||!v){alert('Llena N, Fecha y Valor para mantenimiento'); return;} const tbody=document.querySelector('#tablaMantenimiento tbody'); const tr=document.createElement('tr'); tr.innerHTML=`<td>${n}</td><td>${f}</td><td>${parseFloat(v).toFixed(2)}</td>`; const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc); tbody.appendChild(tr); document.getElementById('manN').value=''; document.getElementById('manFecha').value=''; document.getElementById('manValor').value=''; }
+
+/* Guardar BEO */
+document.getElementById('beoForm').addEventListener('submit',function(ev){
+ev.preventDefault();
+const reserva={
+  id:String(contador).padStart(3,'0'),
+  fechaRegistro:document.getElementById('fechaRegistro').value,
+  fechaEvento:document.getElementById('fechaEvento').value,
+  horaInicio:document.getElementById('horaInicio').value,
+  horaFin:document.getElementById('horaFin').value,
+  salon:document.getElementById('salon').value,
+  tipoEvento:document.getElementById('tipoEvento').value,
+  facturarA:document.getElementById('facturarA').value,
+  telefono:document.getElementById('telefono').value,
+  numPersonas:document.getElementById('numPersonas').value,
+  nombreCartera:document.getElementById('nombreCartera').value,
+  codigo:document.getElementById('codigo').value,
+  contactoComercial:document.getElementById('contactoComercial').value,
+  contactoEvento:document.getElementById('contactoEvento').value,
+  telContacto:document.getElementById('telContacto').value,
+  responsablePago:document.getElementById('responsablePago').value,
+  dui:document.getElementById('dui').value,
+  nit:document.getElementById('nit').value,
+  noIva:document.getElementById('noIva').value,
+  ejecutivaVentas:document.getElementById('ejecutivaVentas').value,
+  telEjecutiva:document.getElementById('telEjecutiva').value,
+  celEjecutiva:document.getElementById('celEjecutiva').value,
+  montoReserva:parseFloat(document.getElementById('montoReserva').value)||0,
+  pagoAdelantado:parseFloat(document.getElementById('pagoAdelantado').value)||0,
+  montoPendiente:parseFloat(document.getElementById('montoPendiente').value)||0,
+  montaje:Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr=>({tipo:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
+  cocina:Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr=>({item:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
+  productos:Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr=>({codigo:tr.children[0].textContent,descripcion:tr.children[1].textContent,cantidad:tr.children[2].textContent,precio:tr.children[3].textContent,valor:tr.children[4].textContent})),
+  mantenimiento:Array.from(document.querySelectorAll('#tablaMantenimiento tbody tr')).map(tr=>({n:tr.children[0].textContent,fecha:tr.children[1].textContent,valor:tr.children[2].textContent})),
+  createdAt:new Date().toISOString()
+};
+const arr=getReservas();
+arr.push(reserva);
+setReservas(arr);
+contador++; localStorage.setItem('contadorBEO',contador);
+alert('BEO guardado correctamente.'); 
+beoForm.reset();
+document.getElementById('numReserva').value=String(contador).padStart(3,'0');
+calcularPendiente();
+});
+
+// --- Calcular automáticamente el monto pendiente ---
+function calcularPendiente() {
+  const monto = parseFloat(document.getElementById('montoReserva').value) || 0;
+  const pago = parseFloat(document.getElementById('pagoAdelantado').value) || 0;
+  document.getElementById('montoPendiente').value = (monto - pago).toFixed(2);
+}
+
+// Ejecutar cada vez que cambien los valores
+document.getElementById('montoReserva').addEventListener('input', calcularPendiente);
+document.getElementById('pagoAdelantado').addEventListener('input', calcularPendiente);
+
+// Ejecutar una vez al cargar
+window.addEventListener('DOMContentLoaded', calcularPendiente);
+
+</script>
+
+</body>
+</html>

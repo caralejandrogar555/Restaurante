@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reporte - Restaurante El Rodeo</title>
+<style>
+/* === PALETA DE COLORES EL RODEO === */
+:root {
+  --rojo: #b11226;
+  --dorado: #ffd700;
+  --gris-fondo: #2a2a40;
+  --gris-tabla: #35354a;
+  --gris-input: #3a3a5a;
+  --blanco: #fff;
+  --verde: #28a745;
+  --naranja: #ff9800;
+}
+
+/* === ESTILOS GENERALES === */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  margin: 20px;
+  background: var(--gris-fondo);
+  color: var(--blanco);
+  line-height: 1.5;
+}
+
+/* === TÍTULOS === */
+h1, h2 {
+  color: var(--dorado);
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* === MENÚ DE NAVEGACIÓN === */
+.menu-botones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.menu-botones button {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.menu-botones button:hover {
+  background: #e6c200;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* === FILTROS MODERNOS === */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  align-items: center;
+  background: var(--gris-tabla);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+.toolbar label {
+  margin-right: 5px;
+  font-weight: bold;
+}
+.toolbar input {
+  width: 120px;
+  padding: 6px 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background: var(--gris-input);
+  color: var(--blanco);
+}
+.toolbar input::placeholder {
+  color: #ccc;
+}
+.toolbar button {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  border: none;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+.toolbar button:hover {
+  background: #e6c200;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* === TABLA RESUMEN === */
+.tabla-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--gris-tabla);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 400px;
+}
+th, td {
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: 1px solid #555;
+}
+th {
+  background: var(--rojo);
+  color: var(--blanco);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+tr:nth-child(even) { background: #383850; }
+tr:hover { background: #4a4a6a; }
+
+/* === GRÁFICOS RESPONSIVOS ===== */
+#graficos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+#graficos canvas {
+  background: var(--gris-tabla);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 600px;
+  width: 100%;
+  height: 300px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Reporte de Reservaciones e Ingresos</h1>
+<nav class="menu-botones">
+    <button onclick="window.location.href='index.html'">INICIO</button>
+    <button onclick="window.location.href='reservaciones.html'">RESERVACIONES</button>
+    <button onclick="window.location.href='reporte.html'">REPORTE</button>
+    <button onclick="window.location.href='generarBEO.html'">GENERAR BEO</button>  <!-- <- nuevo -->
+    <button onclick="window.location.href='formulario.html'">FORMULARIO</button>
+</nav>
+</header>
+
+<main>
+<!-- ====== FILTROS ====== -->
+<div class="toolbar">
+    <div>
+        <label>Semana:</label>
+        <input type="week" id="selectorSemana">
+    </div>
+    <div>
+        <label>Mes:</label>
+        <input type="month" id="selectorMes">
+    </div>
+    <button onclick="aplicarFiltros()">Aplicar</button>
+</div>
+
+<!-- ====== TABLA RESUMEN ====== -->
+<div class="tabla-container">
+    <h2>Tabla Resumen</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Periodo</th>
+                <th>Reservaciones</th>
+                <th>Ingresos ($)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Semana</td>
+                <td id="totalSemana">0</td>
+                <td id="ingresosSemana">0.00</td>
+            </tr>
+            <tr>
+                <td>Mes</td>
+                <td id="totalMes">0</td>
+                <td id="ingresosMes">0.00</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ====== GRÁFICOS ====== -->
+<div id="graficos">
+    <canvas id="graficoSemana"></canvas>
+    <canvas id="graficoMes"></canvas>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// =================== Helpers ===================
+function parseFecha(fechaStr){
+    if(!fechaStr) return null;
+    const [y,m,d] = fechaStr.split('-').map(Number);
+    return new Date(y,m-1,d);
+}
+
+function getWeekRange(weekString){
+    const [year, week] = weekString.split('-W').map(Number);
+    const primerDia = new Date(year,0,1 + (week-1)*7);
+    const dia = primerDia.getDay();
+    const lunes = new Date(primerDia);
+    lunes.setDate(primerDia.getDate() - (dia===0?6:dia-1));
+    const domingo = new Date(lunes);
+    domingo.setDate(lunes.getDate()+6);
+    return {lunes, domingo};
+}
+
+function getWeekNumber(d){
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dayNum = d.getUTCDay()||7;
+    d.setUTCDate(d.getUTCDate()+4-dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d-yearStart)/86400000+1)/7));
+}
+
+// =================== Filtrar y calcular ===================
+function aplicarFiltros(){
+    const reservas = JSON.parse(localStorage.getItem('reservas')||'[]');
+    const reservasVal = reservas.filter(r => r.fechaRegistro && r.pagoAdelantado); // solo reservas válidas
+
+    const semanaFiltro = document.getElementById('selectorSemana').value;
+    const mesFiltro = document.getElementById('selectorMes').value;
+
+    // Semana
+    let reservasSemana = reservasVal;
+    if(semanaFiltro){
+        const {lunes, domingo} = getWeekRange(semanaFiltro);
+        reservasSemana = reservasVal.filter(r=>{
+            const f = parseFecha(r.fechaRegistro);
+            return f>=lunes && f<=domingo;
+        });
+    } else {
+        const ahora = new Date();
+        const {lunes, domingo} = getWeekRange(`${ahora.getFullYear()}-W${String(getWeekNumber(ahora)).padStart(2,'0')}`);
+        reservasSemana = reservasVal.filter(r=>{
+            const f = parseFecha(r.fechaRegistro);
+            return f>=lunes && f<=domingo;
+        });
+    }
+
+    // Mes
+    let reservasMes = reservasVal;
+    if(mesFiltro){
+        const [y,m] = mesFiltro.split('-').map(Number);
+        const inicio = new Date(y,m-1,1);
+        const fin = new Date(y,m,0);
+        reservasMes = reservasVal.filter(r=>{
+            const f = parseFecha(r.fechaRegistro);
+            return f>=inicio && f<=fin;
+        });
+    } else {
+        const ahora = new Date();
+        const inicio = new Date(ahora.getFullYear(), ahora.getMonth(),1);
+        const fin = new Date(ahora.getFullYear(), ahora.getMonth()+1,0);
+        reservasMes = reservasVal.filter(r=>{
+            const f = parseFecha(r.fechaRegistro);
+            return f>=inicio && f<=fin;
+        });
+    }
+
+    // Totales
+    const ingresosSemana = reservasSemana.reduce((a,r)=>a+parseFloat(r.pagoAdelantado),0);
+    const ingresosMes = reservasMes.reduce((a,r)=>a+parseFloat(r.pagoAdelantado),0);
+
+    document.getElementById('totalSemana').textContent = reservasSemana.length;
+    document.getElementById('ingresosSemana').textContent = ingresosSemana.toFixed(2);
+    document.getElementById('totalMes').textContent = reservasMes.length;
+    document.getElementById('ingresosMes').textContent = ingresosMes.toFixed(2);
+
+    generarGraficoSemana(reservasSemana);
+    generarGraficoMes(reservasMes);
+}
+
+// =================== Gráficos ===================
+function generarGraficoSemana(datos){
+    const dias = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+    const counts = Array(7).fill(0);
+    const ingresos = Array(7).fill(0);
+
+    datos.forEach(r=>{
+        const f = parseFecha(r.fechaRegistro);
+        const idx = f.getDay()===0?6:f.getDay()-1;
+        counts[idx]++;
+        ingresos[idx]+=parseFloat(r.pagoAdelantado);
+    });
+
+    const ctx = document.getElementById('graficoSemana').getContext('2d');
+    if(window.chartSemana) window.chartSemana.destroy();
+    window.chartSemana = new Chart(ctx,{
+        type:'bar',
+        data:{
+            labels:dias,
+            datasets:[
+                {label:'Reservaciones', data:counts, backgroundColor:'#b11226'},
+                {label:'Ingresos ($)', data:ingresos, backgroundColor:'#ffd700'}
+            ]
+        },
+        options:{responsive:true, plugins:{legend:{position:'bottom'}, title:{display:true,text:'Semana'}}}
+    });
+}
+
+function generarGraficoMes(datos){
+    if(!datos.length){
+        const ctx = document.getElementById('graficoMes').getContext('2d');
+        if(window.chartMes) window.chartMes.destroy();
+        window.chartMes = new Chart(ctx,{type:'line',data:{labels:[],datasets:[]}}); 
+        return;
+    }
+
+    const dias = [];
+    const counts = [];
+    const ingresos = [];
+
+    const inicio = new Date(Math.min(...datos.map(r=>parseFecha(r.fechaRegistro))));
+    const fin = new Date(Math.max(...datos.map(r=>parseFecha(r.fechaRegistro))));
+    for(let d=new Date(inicio); d<=fin; d.setDate(d.getDate()+1)){
+        dias.push(`${d.getDate().toString().padStart(2,'0')}-${(d.getMonth()+1).toString().padStart(2,'0')}`);
+        const sameDay = datos.filter(r=>parseFecha(r.fechaRegistro).toDateString()===d.toDateString());
+        counts.push(sameDay.length);
+        ingresos.push(sameDay.reduce((a,r)=>a+parseFloat(r.pagoAdelantado),0));
+    }
+
+    const ctx = document.getElementById('graficoMes').getContext('2d');
+    if(window.chartMes) window.chartMes.destroy();
+    window.chartMes = new Chart(ctx,{
+        type:'line',
+        data:{
+            labels:dias,
+            datasets:[
+                {label:'Reservaciones', data:counts, borderColor:'#b11226', backgroundColor:'#b1122615', fill:true},
+                {label:'Ingresos ($)', data:ingresos, borderColor:'#ffd700', backgroundColor:'#ffd70015', fill:true}
+            ]
+        },
+        options:{responsive:true, plugins:{legend:{position:'bottom'}, title:{display:true,text:'Mes'}}}
+    });
+}
+
+// =================== Inicialización ===================
+const ahora = new Date();
+document.getElementById('selectorSemana').value = `${ahora.getFullYear()}-W${String(getWeekNumber(ahora)).padStart(2,'0')}`;
+document.getElementById('selectorMes').value = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,'0')}`;
+aplicarFiltros();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>RESTAURANTE EL RODEO - Inicio</title>
+<link rel="stylesheet" href="estilos.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+/* ======== LOGIN MEJORADO ======== */
+#loginContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f5efe6; /* mismo tono cálido del restaurante */
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.login-box {
+  background: #fff8f0;
+  padding: 30px 35px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  text-align: center;
+  width: 320px;
+  border: 1px solid #d8c3a5;
+}
+
+.login-box h2 {
+  color: #4b2e05;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.login-box input {
+  width: 90%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #c1a87d;
+  border-radius: 8px;
+  background: #fffdf9;
+  font-size: 15px;
+  color: #2c2c2c; /* ← texto bien visible */
+}
+
+.login-box input::placeholder {
+  color: #8b7e6a; /* ← color del texto del placeholder */
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #8b5e34;
+  box-shadow: 0 0 5px rgba(139,94,52,0.5);
+}
+
+.btn-login {
+  background-color: #8b5e34;
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.btn-login:hover {
+  background-color: #704c28;
+}
+#mensajeError {
+  color: #b30000;
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<!-- 🔒 LOGIN -->
+<div id="loginContainer">
+  <div class="login-box">
+    <h2>Inicio de Sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="contrasena" placeholder="Contraseña" required>
+    <button class="btn-login" onclick="iniciarSesion()">Ingresar</button>
+    <p id="mensajeError" style="display:none;">Usuario o contraseña incorrectos</p>
+  </div>
+</div>
+
+<!-- 🌐 CONTENIDO PRINCIPAL -->
+<div id="mainContent" style="display:none">
+<header>
+  <div><strong>RESTAURANTE EL RODEO</strong></div>
+  <nav class="menu-botones no-print">
+    <button onclick="mostrarSeccion('inicio')">INICIO</button>
+    <button onclick="window.location.href='reservaciones.html'">RESERVACIONES</button>
+    <button onclick="window.location.href='reporte.html'" class="btn-nav">REPORTE</button>
+    <button onclick="window.location.href='beo.html'">GENERAR BEO</button>
+    <button onclick="window.location.href='formulario.html'">FORMULARIO</button>
+    <button onclick="cerrarSesion()" style="float:right;background-color:#c0392b;color:white;">Cerrar sesión</button>
+  </nav>
+</header>
+
+<!-- SECCIÓN DE INICIO -->
+<div class="container" id="inicio" style="display:block">
+  <h2>Bienvenido — Panel de Reservaciones</h2>
+  <p style="text-align:center">Usa el menú para registrar o ver reservaciones. El BEO se guarda en el sistema y aparece en Reservaciones.</p>
+</div>
+
+<!-- 🔹 Contenedor BEO -->
+<div class="container" id="beo" style="display:none">
+  <h2>Generar BEO — Orden de Evento</h2>
+  <p>Aquí va todo tu contenido de BEO (idéntico al original).</p>
+</div>
+</div>
+
+<script>
+// === LOGIN ===
+const usuariosValidos = [
+  { usuario: "roberto", contrasena: "12345" }
+];
+
+function mostrarLogin() {
+  document.getElementById("loginContainer").style.display = "flex";
+  document.getElementById("mainContent").style.display = "none";
+}
+
+function mostrarPrincipal() {
+  document.getElementById("loginContainer").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+}
+
+function iniciarSesion() {
+  const user = document.getElementById("usuario").value.trim();
+  const pass = document.getElementById("contrasena").value.trim();
+  const mensaje = document.getElementById("mensajeError");
+
+  const valido = usuariosValidos.some(u => u.usuario === user && u.contrasena === pass);
+
+  if (valido) {
+    localStorage.setItem("usuarioActivo", user);
+    mostrarPrincipal();
+  } else {
+    mensaje.style.display = "block";
+  }
+}
+
+function cerrarSesion() {
+  localStorage.removeItem("usuarioActivo");
+  mostrarLogin();
+}
+
+// Mostrar contenido según sesión activa
+window.onload = function() {
+  if (localStorage.getItem("usuarioActivo")) {
+    mostrarPrincipal();
+  } else {
+    mostrarLogin();
+  }
+};
+
+// === FUNCIONES DE NAVEGACIÓN ===
+function mostrarSeccion(id) {
+  const secciones = ['inicio', 'beo', 'reservaciones', 'reporte'];
+  secciones.forEach(sec => {
+    const el = document.getElementById(sec);
+    if (el) el.style.display = (sec === id) ? 'block' : 'none';
+  });
+}
+
+mostrarSeccion('inicio');
+</script>
+</body>
+</html>

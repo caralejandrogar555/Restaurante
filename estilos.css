@@ -1,0 +1,250 @@
+/* --- PALETA DE COLORES EL RODEO --- */
+:root {
+  --rojo: #b11226;
+  --dorado: #ffd700;
+  --celeste: #eaf6ff;
+  --celeste-borde: #bcdfff;
+  --gris-claro: #f5f7fa;
+  --gris-fondo: #2a2a40; /* fondo morado elegante */
+  --gris-tabla: #35354a; /* contenedor y tablas */
+  --negro: #111;
+  --blanco: #fff;
+  --verde: #28a745;
+  --naranja: #ff9800;
+}
+
+/* --- ESTILOS GENERALES --- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--gris-fondo); /* fondo moradito para todas las páginas */
+  color: var(--blanco);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+/* --- ENCABEZADO --- */
+header {
+  background: var(--rojo);
+  color: var(--blanco);
+  padding: 20px 10px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8em;
+  letter-spacing: 1px;
+}
+
+/* --- MENÚ DE NAVEGACIÓN --- */
+.menu-botones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.menu-botones button {
+  background: var(--dorado);
+  color: var(--negro);
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.menu-botones button:hover {
+  background: #e0c200;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.container {
+  background: var(--gris-tabla); /* contraste con el body */
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  color: var(--blanco);
+}
+
+/* --- TÍTULOS --- */
+h2 {
+  text-align: center;
+  color: var(--dorado);
+  font-size: 2em;
+  margin-bottom: 25px;
+}
+
+/* --- FIELDSETS --- */
+fieldset {
+  border: 1px solid var(--celeste-borde);
+  background: #2e2e50; /* contraste con el contenedor */
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+legend {
+  color: var(--dorado);
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* --- INPUTS Y SELECTS --- */
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border: 1px solid var(--gris-tabla);
+  border-radius: 10px;
+  background: #3a3a5a; /* contraste oscuro para inputs */
+  color: var(--blanco);
+  font-size: 1em;
+  transition: all 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--dorado);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  outline: none;
+}
+
+/* --- TABLAS --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #2e2e50;
+  color: var(--blanco);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+th, td {
+  padding: 10px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--gris-tabla);
+}
+
+th {
+  background: #3f3f5a;
+  color: var(--dorado);
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background: #383850;
+}
+
+/* --- BOTONES MODERNOS --- */
+button {
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 18px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s;
+}
+
+button.btn-primary, button.add-btn {
+  background: var(--dorado);
+  color: var(--gris-fondo);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button.btn-primary:hover, button.add-btn:hover {
+  background: #e6c200;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+button.btn-danger {
+  background: #d9534f;
+  color: var(--blanco);
+}
+
+button.btn-danger:hover {
+  background: #b43a36;
+}
+
+/* --- ROWS Y COLUMNAS --- */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 12px;
+}
+
+.col {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* --- ACCIONES EN TABLA --- */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* --- MODAL / PREVISUALIZACIÓN --- */
+#recibo {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2e2e50;
+  border: 2px solid var(--rojo);
+  border-radius: 10px;
+  width: 90%;
+  max-width: 900px;
+  height: 90%;
+  overflow-y: auto;
+  padding: 20px;
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-title {
+  color: var(--rojo);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+/* --- MODO IMPRESIÓN --- */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  #recibo {
+    position: static;
+    transform: none;
+    width: auto;
+    height: auto;
+    border: none;
+    box-shadow: none;
+  }
+}
