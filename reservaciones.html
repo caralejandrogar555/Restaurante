@@ -347,10 +347,8 @@ function renderTablaReservas(filtro='') {
 
 // ====================== Ver / Imprimir / Borrar ======================
 function verReserva(id){
-  const r = getReservas().find(x=>x.id===id);
-  if(!r){ alert('Reserva no encontrada'); return; }
-  document.getElementById('previewContent').innerHTML = buildBEOHtml(r);
-  document.getElementById('recibo').style.display='block';
+  // Abrir el formulario en una nueva pestaña con el id de la reserva
+  window.open(`formulario.html?id=${id}`, '_blank');
 }
 function imprimirReserva(id){
   const r = getReservas().find(x=>x.id===id);
