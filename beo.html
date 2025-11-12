@@ -443,7 +443,9 @@ function guardarDatos() {
 const STORAGE_KEY = 'reservas';
 function getReservas() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
 function setReservas(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-
+// Reiniciar contador manualmente si deseas volver a 001
+// Descomenta la siguiente línea cuando quieras reiniciar
+// localStorage.setItem('contadorBEO', '1');
 let contador = parseInt(localStorage.getItem('contadorBEO') || '1', 10);
 document.getElementById('numReserva').value = String(contador).padStart(3, '0');
 
@@ -656,4 +658,5 @@ document.getElementById('beoForm').addEventListener('submit', function (ev) {
 
 </body>
 </html>
+
 
