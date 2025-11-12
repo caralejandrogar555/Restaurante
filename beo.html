@@ -416,6 +416,11 @@ button.btn-danger:hover {
   </div>
 </fieldset>
 
+<!-- Botón opcional reinicio de contador -->
+<div style="text-align:center; margin:15px 0;" class="no-print">
+  <button type="button" onclick="reiniciarContador()">🔄 Reiniciar N° Reserva</button>
+</div>
+
 <div style="text-align:center; margin-top:15px;">
   <button type="submit" class="btn-primary">Guardar y Generar BEO</button>
 </div>
@@ -424,51 +429,48 @@ button.btn-danger:hover {
 </div>
 
 <script>
-function guardarDatos() {
-  const datos = {
-    reserva: document.getElementById("reserva").value,
-    fecha: document.getElementById("fecha").value,
-    horaInicio: document.getElementById("horaInicio").value,
-    horaFin: document.getElementById("horaFin").value,
-    salon: document.getElementById("salon").value,
-    tipoEvento: document.getElementById("tipoEvento").value,
-  };
-  localStorage.setItem("datosBEO", JSON.stringify(datos));
-  alert("✅ Datos guardados correctamente.");
+// =======================
+// CONTADOR BEO / N° RESERVA
+// =======================
+
+// Inicializa contador si no existe
+if (!localStorage.getItem('contadorBEO')) {
+  localStorage.setItem('contadorBEO', '1'); // comienza desde 1
+}
+
+// Función para actualizar el campo N° de Reserva
+function actualizarNumReserva() {
+  const contadorActual = parseInt(localStorage.getItem('contadorBEO'), 10);
+  document.getElementById('numReserva').value = String(contadorActual).padStart(4, '0');
+}
+
+// Mostrar el número al cargar la página
+actualizarNumReserva();
+
+// Función para incrementar el contador al guardar un BEO
+function incrementarContadorBEO() {
+  let contadorActual = parseInt(localStorage.getItem('contadorBEO'), 10);
+  contadorActual++;
+  localStorage.setItem('contadorBEO', contadorActual);
+  actualizarNumReserva();
+}
+
+// Opcional: botón para reiniciar el contador manualmente
+function reiniciarContador() {
+  if (confirm("⚠️ ¿Deseas reiniciar el N° de Reserva a 0001?")) {
+    localStorage.setItem('contadorBEO', '1');
+    actualizarNumReserva();
+  }
 }
 
 // =======================
-// FUNCIONES AUXILIARES
+// FUNCIONES AUXILIARES (sin cambios)
 // =======================
 const STORAGE_KEY = 'reservas';
 
-// Leer y guardar reservas en localStorage
-function getReservas() {
-  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-}
+function getReservas() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+function setReservas(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
-function setReservas(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
-
-// Reiniciar contador MANUALMENTE una sola vez para iniciar en 0001
-if (!localStorage.getItem('contadorBEO')) {
-  localStorage.setItem('contadorBEO', '1'); // ← inicia en 1 la primera vez
-}
-
-// Obtener contador actual y asignarlo al campo “N° de Reserva”
-let contador = parseInt(localStorage.getItem('contadorBEO'), 10);
-document.getElementById('numReserva').value = String(contador).padStart(4, '0');
-
-// Función para incrementar el contador cuando se guarda un nuevo BEO
-function incrementarContadorBEO() {
-  contador++;
-  localStorage.setItem('contadorBEO', contador.toString());
-}
-
-// =======================
-// FORMATOS
-// =======================
 function formatTelefono(input) {
   input.addEventListener('input', () => {
     let v = input.value.replace(/\D/g, '');
@@ -485,12 +487,10 @@ function formatDUI(input) {
   });
 }
 
-['telefono', 'telContacto', 'telEjecutiva', 'celEjecutiva'].forEach(id => formatTelefono(document.getElementById(id)));
+['telefono','telContacto','telEjecutiva','celEjecutiva'].forEach(id => formatTelefono(document.getElementById(id)));
 formatDUI(document.getElementById('dui'));
 
-// =======================
-// CALCULAR MONTO PENDIENTE EN TIEMPO REAL
-// =======================
+// Calcular pendiente
 function calcularPendiente() {
   const monto = parseFloat(document.getElementById('montoReserva').value) || 0;
   const adelanto = parseFloat(document.getElementById('pagoAdelantado').value) || 0;
@@ -502,114 +502,66 @@ document.getElementById('montoReserva').addEventListener('input', calcularPendie
 document.getElementById('pagoAdelantado').addEventListener('input', calcularPendiente);
 window.addEventListener('DOMContentLoaded', calcularPendiente);
 
-// =======================
-// BOTONES Y TABLAS DINÁMICAS
-// =======================
-function crearBotonEliminar(onclick) {
-  const btn = document.createElement('button');
-  btn.textContent = 'Eliminar';
-  btn.type = 'button';
-  btn.onclick = onclick;
-  return btn;
-}
+// Funciones de tablas dinámicas (Montaje, Cocina, Productos, Mantenimiento)
+function crearBotonEliminar(onclick) { const btn = document.createElement('button'); btn.textContent='Eliminar'; btn.type='button'; btn.onclick=onclick; return btn; }
 
 function agregarMontaje() {
   const tipo = document.getElementById('montajeTipo').value;
-  const cant = parseInt(document.getElementById('montajeCantidad').value) || 0;
-  if (!tipo || cant <= 0) { alert('Selecciona tipo y cantidad válida'); return; }
-  const tbody = document.querySelector('#tablaMontaje tbody');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${tipo}</td><td>${cant}</td>`;
-  const tdAcc = document.createElement('td');
-  tdAcc.appendChild(crearBotonEliminar(() => tr.remove()));
-  tr.appendChild(tdAcc);
+  const cant = parseInt(document.getElementById('montajeCantidad').value)||0;
+  if(!tipo||cant<=0){alert('Selecciona tipo y cantidad válida');return;}
+  const tbody=document.querySelector('#tablaMontaje tbody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`;
+  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-  document.getElementById('montajeTipo').value = '';
-  document.getElementById('montajeCantidad').value = '';
+  document.getElementById('montajeTipo').value='';
+  document.getElementById('montajeCantidad').value='';
 }
 
 function agregarCocina() {
-  const tipo = document.getElementById('cocinaTipo').value;
-  const cant = parseInt(document.getElementById('cocinaCantidad').value) || 0;
-  if (!tipo || cant <= 0) { alert('Selecciona item y cantidad válida'); return; }
-  const tbody = document.querySelector('#tablaCocina tbody');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${tipo}</td><td>${cant}</td>`;
-  const tdAcc = document.createElement('td');
-  tdAcc.appendChild(crearBotonEliminar(() => tr.remove()));
-  tr.appendChild(tdAcc);
+  const tipo=document.getElementById('cocinaTipo').value;
+  const cant=parseInt(document.getElementById('cocinaCantidad').value)||0;
+  if(!tipo||cant<=0){alert('Selecciona item y cantidad válida');return;}
+  const tbody=document.querySelector('#tablaCocina tbody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`;
+  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-  document.getElementById('cocinaTipo').value = '';
-  document.getElementById('cocinaCantidad').value = '';
+  document.getElementById('cocinaTipo').value='';
+  document.getElementById('cocinaCantidad').value='';
 }
 
 function agregarProducto() {
-  const cod = document.getElementById('prodCodigo').value.trim();
-  const desc = document.getElementById('prodDesc').value.trim();
-  const cant = parseFloat(document.getElementById('prodCant').value) || 0;
-  const precio = parseFloat(document.getElementById('prodPrecio').value) || 0;
-  if (!desc || cant <= 0 || precio <= 0) { alert('Llena correctamente el producto'); return; }
-
-  const val = (cant * precio).toFixed(2);
-  const tbody = document.querySelector('#tablaProductos tbody');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${cod}</td><td>${desc}</td><td>${cant}</td><td>${precio.toFixed(2)}</td><td>${val}</td>`;
-  const tdAcc = document.createElement('td');
-  tdAcc.appendChild(crearBotonEliminar(() => tr.remove()));
-  tr.appendChild(tdAcc);
+  const cod=document.getElementById('prodCodigo').value.trim();
+  const desc=document.getElementById('prodDesc').value.trim();
+  const cant=parseFloat(document.getElementById('prodCant').value)||0;
+  const precio=parseFloat(document.getElementById('prodPrecio').value)||0;
+  if(!desc||cant<=0||precio<=0){alert('Llena correctamente el producto');return;}
+  const val=(cant*precio).toFixed(2);
+  const tbody=document.querySelector('#tablaProductos tbody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${cod}</td><td>${desc}</td><td>${cant}</td><td>${precio.toFixed(2)}</td><td>${val}</td>`;
+  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-
-  document.getElementById('prodCodigo').value = '';
-  document.getElementById('prodDesc').value = '';
-  document.getElementById('prodCant').value = '';
-  document.getElementById('prodPrecio').value = '';
-}
-
-function agregarMantenimiento() {
-  const n = document.getElementById('manN').value.trim();
-  const f = document.getElementById('manFecha').value;
-  const v = document.getElementById('manValor').value;
-  if (!n || !f || !v) { alert('Llena N, Fecha y Valor para mantenimiento'); return; }
-
-  const tbody = document.querySelector('#tablaMantenimiento tbody');
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${n}</td><td>${f}</td><td>${parseFloat(v).toFixed(2)}</td>`;
-  tbody.appendChild(tr);
-
-  document.getElementById('manN').value = '';
-  document.getElementById('manFecha').value = '';
-  document.getElementById('manValor').value = '';
+  document.getElementById('prodCodigo').value=''; document.getElementById('prodDesc').value=''; document.getElementById('prodCant').value=''; document.getElementById('prodPrecio').value='';
 }
 
 // =======================
 // GUARDAR BEO
 // =======================
-document.getElementById('beoForm').addEventListener('submit', function (ev) {
+document.getElementById('beoForm').addEventListener('submit', function(ev){
   ev.preventDefault();
-
-  const camposObligatorios = ['fechaRegistro', 'fechaEvento', 'horaInicio', 'horaFin', 'salon', 'tipoEvento', 'facturarA', 'telefono'];
-  const faltantes = [];
-
-  camposObligatorios.forEach(id => {
-    const campo = document.getElementById(id);
-    if (!campo.value.trim()) faltantes.push(id);
-  });
-
-  if (faltantes.length > 0) {
-    const nombres = faltantes.map(id => {
-      const label = document.querySelector(`label[for="${id}"]`)?.textContent || id;
-      return label;
-    }).join(', ');
-
-    const confirmar = confirm(`⚠️ No has completado los siguientes campos: ${nombres}\n\n¿Deseas guardar de todos modos?`);
-    if (!confirmar) {
-      document.getElementById(faltantes[0]).focus();
-      return;
-    }
+  const camposObligatorios=['fechaRegistro','fechaEvento','horaInicio','horaFin','salon','tipoEvento','facturarA','telefono'];
+  const faltantes=[];
+  camposObligatorios.forEach(id=>{if(!document.getElementById(id).value.trim()) faltantes.push(id);});
+  if(faltantes.length>0){
+    const nombres=faltantes.map(id=>document.querySelector(`label[for="${id}"]`)?.textContent||id).join(', ');
+    const confirmar=confirm(`⚠️ No has completado los siguientes campos: ${nombres}\n\n¿Deseas guardar de todos modos?`);
+    if(!confirmar){document.getElementById(faltantes[0]).focus();return;}
   }
 
-  const reserva = {
-    id: String(contador).padStart(3, '0'),
+  const reserva={
+    id: String(parseInt(localStorage.getItem('contadorBEO'),10)).padStart(3,'0'),
     fechaRegistro: document.getElementById('fechaRegistro').value,
     fechaEvento: document.getElementById('fechaEvento').value,
     horaInicio: document.getElementById('horaInicio').value,
@@ -631,45 +583,26 @@ document.getElementById('beoForm').addEventListener('submit', function (ev) {
     ejecutivaVentas: document.getElementById('ejecutivaVentas').value,
     telEjecutiva: document.getElementById('telEjecutiva').value,
     celEjecutiva: document.getElementById('celEjecutiva').value,
-    montoReserva: parseFloat(document.getElementById('montoReserva').value) || 0,
-    pagoAdelantado: parseFloat(document.getElementById('pagoAdelantado').value) || 0,
-    montoPendiente: parseFloat(document.getElementById('montoPendiente').value) || 0,
-    montaje: Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr => ({
-      tipo: tr.children[0].textContent,
-      cantidad: tr.children[1].textContent
-    })),
-    cocina: Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr => ({
-      item: tr.children[0].textContent,
-      cantidad: tr.children[1].textContent
-    })),
-    productos: Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr => ({
-      codigo: tr.children[0].textContent,
-      descripcion: tr.children[1].textContent,
-      cantidad: tr.children[2].textContent,
-      precio: tr.children[3].textContent,
-      valor: tr.children[4].textContent
-    })),
-  mantenimiento: Array.from(document.querySelectorAll('#tablaMantenimiento tbody tr')).map(tr => ({
-  n: tr.children[0].textContent.trim(),         // Columna D, 1, 2...
-  dato: tr.children[1].textContent.trim(),      // Lo que digitás en la columna editable
-  fecha: tr.children[2].querySelector('input[type="date"]')?.value || tr.children[2].textContent.trim(),
-  valor: tr.children[3].querySelector('input[type="text"]')?.value || tr.children[3].textContent.trim()
-})),
-    manObservaciones: document.getElementById('manObservaciones').value || '',
+    montoReserva: parseFloat(document.getElementById('montoReserva').value)||0,
+    pagoAdelantado: parseFloat(document.getElementById('pagoAdelantado').value)||0,
+    montoPendiente: parseFloat(document.getElementById('montoPendiente').value)||0,
+    montaje: Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr=>({tipo:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
+    cocina: Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr=>({item:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
+    productos: Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr=>({codigo:tr.children[0].textContent,descripcion:tr.children[1].textContent,cantidad:tr.children[2].textContent,precio:tr.children[3].textContent,valor:tr.children[4].textContent})),
+    manObservaciones: document.getElementById('manObservaciones').value||'',
     createdAt: new Date().toISOString()
   };
 
-  const arr = getReservas();
+  const arr=getReservas();
   arr.push(reserva);
   setReservas(arr);
-
   localStorage.setItem("datosBEO", JSON.stringify(reserva));
 
-  contador++;
-  localStorage.setItem('contadorBEO', contador);
+  // Incrementar contador
+  incrementarContadorBEO();
 
   alert('✅ BEO guardado correctamente.');
-  window.location.href = `formulario.html?id=${reserva.id}`;
+  window.location.href=`formulario.html?id=${reserva.id}`;
 });
 </script>
 
