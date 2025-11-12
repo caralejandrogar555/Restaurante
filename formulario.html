@@ -5,38 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orden de Trabajo (BEO) - Restaurante El Rodeo</title>
 <style>
+/* ======= ESTILO GENERAL ======= */
 body {
     font-family: Arial, sans-serif;
     background-color: #fff;
     color: #000;
-    margin: 15px;
+    margin: 10mm;
+    font-size: 11px;
 }
+
+/* ======= TÍTULOS ======= */
 h2 {
     text-align: center;
     background-color: #4da6ff;
     color: white;
-    padding: 5px 0;
+    padding: 4px 0;
     border-radius: 4px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    font-size: 13px;
+    margin: 8px 0;
 }
+
+/* ======= TABLAS ======= */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 8px;
-    font-size: 13px;
+    margin-bottom: 6px;
+    font-size: 11px;
 }
+
 th, td {
     border: 1px solid #555;
-    padding: 6px 5px;
+    padding: 4px 6px;
     text-align: left;
     vertical-align: middle;
     word-wrap: break-word;
 }
+
 th {
     background-color: #e6f3ff;
     font-weight: bold;
+    white-space: nowrap;
 }
+
+/* ======= SECCIONES ======= */
 .section-title {
     background-color: #4da6ff;
     color: #fff;
@@ -44,26 +55,55 @@ th {
     text-align: left;
     padding: 5px;
 }
+
+/* ======= BOTONES ======= */
 button {
     background-color: #4da6ff;
     color: #fff;
     border: none;
-    padding: 8px 15px;
-    margin: 5px;
+    padding: 6px 12px;
     font-weight: bold;
     cursor: pointer;
     border-radius: 5px;
+    font-size: 11px;
 }
 button:hover {
     background-color: #2e7ed6;
 }
+
+/* ======= IMPRESIÓN ======= */
 @media print {
-    button { display: none; } /* Oculta los botones al imprimir */
+    button { display: none; }
     body {
-        margin: 10mm; /* Márgenes de página carta */
-        -webkit-print-color-adjust: exact; /* Mantiene colores */
+        margin: 8mm;
+        -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
+    h2 {
+        background-color: #4da6ff !important;
+        color: white !important;
+    }
+}
+
+/* ======= TABLA DE MANTENIMIENTO ======= */
+#tablaMantenimiento th, #tablaMantenimiento td {
+    text-align: center;
+    height: 22px;
+    padding: 4px;
+}
+
+/* ======= TABLA DE PRODUCTOS Y SERVICIOS ======= */
+#productosServicios th, #productosServicios td {
+    text-align: center;
+    height: 22px;
+    padding: 4px;
+}
+
+/* ======= MONTAJE Y COCINA ======= */
+#montajeData, #cocinaData {
+    vertical-align: top;
+    height: 90px;
+    padding: 6px;
 }
 </style>
 </head>
@@ -71,221 +111,199 @@ button:hover {
 
 <h2>ORDEN DE TRABAJO (BEO) - RESERVACIONES EVENTOS</h2>
 
-<!-- DATOS DEL EVENTO -->
-<table>
-    <tr>
-        <th style="width: 12%;">N° de Reserva</th>
-        <td style="width: 10%;"></td>
-        <th style="width: 10%;">Fecha</th>
-        <td style="width: 18%;"></td>
-        <th style="width: 10%;">Hora inicio</th>
-        <td style="width: 18%;"></td>
-        <th style="width: 12%;">Hora finalización</th>
-        <td style="width: 20%;"></td>
-    </tr>
-    <tr>
-        <th>Salón</th>
-        <td style="width: 10%;"></td>
-        <th>Tipo de evento</th>
-        <td colspan="5"></td>
-    </tr>
+<!-- 1️⃣ DATOS DEL EVENTO -->
+<table id="tablaEvento">
+  <tr>
+    <th style="width:13%;">N° Reserva</th><td style="width:15%;"></td>
+    <th style="width:10%;">Fecha</th><td style="width:15%;"></td>
+    <th style="width:12%;">Hr. inicio</th><td style="width:15%;"></td>
+    <th style="width:12%;">Hr. fin</th><td style="width:18%;"></td>
+  </tr>
+  <tr>
+    <th>Salón</th><td></td>
+    <th>Tipo evento</th><td colspan="5"></td>
+  </tr>
+  <tr>
+    <th>Factura:</th><td></td>
+    <th>Tel.:</th><td></td>
+    <th>N° Pers.:</th><td></td>
+    <th>Cartera:</th><td></td>
+  </tr>
+  <tr>
+    <th>Cód.:</th><td></td>
+    <th>Cont. comercial:</th><td></td>
+    <th>Cont. evento:</th><td></td>
+    <th>Tel. cont.:</th><td></td>
+  </tr>
+  <tr>
+    <th>Resp. pago:</th><td></td>
+    <th>DUI:</th><td></td>
+    <th>NIT:</th><td></td>
+    <th>Ejec. ventas:</th><td></td>
+  </tr>
+  <tr>
+    <th>Tel.:</th><td></td>
+    <th>Cel.:</th><td></td>
+    <td colspan="4"></td>
+  </tr>
 </table>
 
-<!-- DATOS DEL CLIENTE -->
+<!-- 2️⃣ MONTAJE Y COCINA -->
 <table>
-    <tr>
-        <th style="width: 20%;">Facturar a nombre de:</th>
-        <td style="width: 25%;"></td>
-        <th style="width: 10%;">Teléfono:</th>
-        <td style="width: 15%;"></td>
-        <th style="width: 12%;">N° Personas:</th>
-        <td style="width: 18%;"></td>
-    </tr>
-    <tr>
-        <th>Nombre en cartera:</th>
-        <td></td>
-        <th>Código:</th>
-        <td colspan="3"></td>
-    </tr>
-    <tr>
-        <th>Contacto comercial:</th>
-        <td></td>
-        <th>Contacto en evento:</th>
-        <td></td>
-        <th>Tel. contacto:</th>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Responsable de pago:</th>
-        <td></td>
-        <th>DUI:</th>
-        <td></td>
-        <th>NIT:</th>
-        <td></td>
-    </tr>
-    <tr>
-        <th>Ejecutiva de ventas:</th>
-        <td></td>
-        <th>Teléfono:</th>
-        <td></td>
-        <th>Celular:</th>
-        <td></td>
-    </tr>
+  <tr>
+    <th colspan="2" class="section-title">MONTAJE</th>
+    <th colspan="2" class="section-title">COCINA</th>
+  </tr>
+  <tr>
+    <td colspan="2" id="montajeData"></td>
+    <td colspan="2" id="cocinaData"></td>
+  </tr>
 </table>
 
-<!-- MONTAJE Y COCINA -->
+<!-- 3️⃣ OBSERVACIONES / DETALLES DE MANTENIMIENTO -->
 <table>
-    <tr>
-        <th colspan="2" class="section-title">MONTAJE</th>
-        <th colspan="2" class="section-title">COCINA</th>
-    </tr>
-    <tr style="height: 150px;">
-        <td colspan="2" id="montajeData" style="vertical-align: top;"></td>
-        <td colspan="2" id="cocinaData" style="vertical-align: top;"></td>
-    </tr>
+  <tr><th class="section-title">Observaciones / Detalles de mantenimiento</th></tr>
+  <tr><td id="manObservacionesText" style="height:60px; white-space:pre-line;"></td></tr>
 </table>
 
-<!-- MANTENIMIENTO -->
+<!-- 4️⃣ MANTENIMIENTO -->
 <h2>MANTENIMIENTO</h2>
 <table id="tablaMantenimiento">
+  <thead>
     <tr>
-        <th>N° Ingreso Caja</th><th>Fecha</th><th>Valor</th>
-        <th>N° Ingreso Caja</th><th>Fecha</th><th>Valor</th>
+      <th colspan="2">N° ing. Caja</th>
+      <th>Fecha</th>
+      <th>Valor</th>
     </tr>
-    <tr><td colspan="6" style="height: 90px;"></td></tr>
+  </thead>
+  <tbody>
+    <tr><td style="width:5%;">D</td><td id="datoD"></td><td id="fechaD"></td><td id="valorD"></td></tr>
+    <tr><td>1</td><td id="dato1"></td><td id="fecha1"></td><td id="valor1"></td></tr>
+    <tr><td>2</td><td id="dato2"></td><td id="fecha2"></td><td id="valor2"></td></tr>
+  </tbody>
 </table>
 
-<!-- OBSERVACIONES / DETALLES DE MANTENIMIENTO -->
-<table>
-  <tr>
-    <th class="section-title">Observaciones / Detalles del mantenimiento</th>
-  </tr>
-  <tr>
-    <td id="manObservacionesText" style="height: 70px; white-space: pre-line;"></td>
-  </tr>
-</table>
-
-<!-- PRODUCTOS Y SERVICIOS -->
+<!-- 5️⃣ PRODUCTOS Y SERVICIOS -->
 <h2>PRODUCTOS Y SERVICIOS</h2>
 <table id="productosServicios">
+  <thead>
     <tr>
-        <th style="width: 10%;">Código</th>
-        <th style="width: 50%;">Descripción</th>
-        <th style="width: 10%;">Cantidad</th>
-        <th style="width: 12%;">Precio Uni.</th>
-        <th style="width: 13%;">Valor</th>
+      <th style="width:15%;">Cód.</th>
+      <th style="width:45%;">Descripción</th>
+      <th style="width:10%;">Cant.</th>
+      <th style="width:15%;">P. uni.</th>
+      <th style="width:15%;">Valor</th>
     </tr>
-    <tr style="height: 28px;"><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr style="height: 28px;"><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr style="height: 28px;"><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr style="height: 28px;"><td></td><td></td><td></td><td></td><td></td></tr>
-    <tr style="height: 28px;"><td></td><td></td><td></td><td></td><td></td></tr>
+  </thead>
+  <tbody>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+  </tbody>
 </table>
 
 <table>
-    <tr>
-        <th colspan="2" style="text-align: left;">Servicios adicionales</th>
-        <th colspan="3" style="text-align: left;">TOTAL ORDEN</th>
-        <td id="totalOrden" style="font-weight: bold; text-align: right;">$0.00</td>
-    </tr>
+  <tr>
+    <th colspan="2" style="text-align:left;">Servicios adicionales</th>
+    <th colspan="2" style="text-align:left;">TOTAL ORDEN</th>
+    <td id="totalOrden" style="font-weight:bold;text-align:right;">$0.00</td>
+  </tr>
 </table>
 
-<!-- FIRMAS -->
+<!-- 6️⃣ FIRMAS -->
 <table>
-    <tr>
-        <td style="height: 80px; text-align: center;">_______________________<br>GERENTE</td>
-        <td style="text-align: center;">_______________________<br>VENTAS</td>
-        <td style="text-align: center;">_______________________<br>CLIENTE</td>
-        <td style="text-align: center;">_______________________<br>COCINA</td>
-        <td style="text-align: center;">_______________________<br>MANTENIMIENTO</td>
-    </tr>
+  <tr>
+    <td style="height:60px; text-align:center;">_________________<br>Gerente</td>
+    <td style="text-align:center;">____________________<br>Ventas</td>
+    <td style="text-align:center;">____________________<br>Cliente</td>
+    <td style="text-align:center;">____________________<br>Cocina</td>
+    <td style="text-align:center;">____________________<br>Mantenimiento</td>
+  </tr>
 </table>
 
-<!-- SOLO BOTÓN DE IMPRIMIR -->
-<div style="text-align: center; margin-top: 15px;">
-    <button onclick="window.print()">🖨️ Imprimir</button>
+<div style="text-align:center;margin-top:10px;">
+  <button onclick="window.print()">🖨️ Imprimir</button>
 </div>
 
-<!-- SCRIPT ORIGINAL PARA LLENAR DATOS -->
 <script>
-const params = new URLSearchParams(window.location.search);
-const reservaId = params.get('id');
+window.onload = function () {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
+  let reserva = reservas.find(r => r.id === id) || JSON.parse(localStorage.getItem('datosBEO') || '{}');
 
-if (reservaId) {
-    const reservas = JSON.parse(localStorage.getItem('reservas') || '[]');
-    const reserva = reservas.find(r => r.id === reservaId);
+  if (!reserva || !reserva.id) {
+    alert("⚠️ No se encontró información para mostrar.");
+    return;
+  }
 
-    if (reserva) {
-        const t0 = document.querySelectorAll('table')[0].rows;
-        t0[0].cells[1].textContent = reserva.id;
-        t0[0].cells[3].textContent = reserva.fechaEvento || '';
-        t0[0].cells[5].textContent = reserva.horaInicio || '';
-        t0[0].cells[7].textContent = reserva.horaFin || '';
-        t0[1].cells[1].textContent = reserva.salon || '';
-        t0[1].cells[3].textContent = reserva.tipoEvento || '';
+  const t0 = document.getElementById('tablaEvento').rows;
+  t0[0].cells[1].textContent = reserva.id || '';
+  t0[0].cells[3].textContent = reserva.fechaEvento || '';
+  t0[0].cells[5].textContent = reserva.horaInicio || '';
+  t0[0].cells[7].textContent = reserva.horaFin || '';
+  t0[1].cells[1].textContent = reserva.salon || '';
+  t0[1].cells[3].textContent = reserva.tipoEvento || '';
+  t0[2].cells[1].textContent = reserva.facturarA || '';
+  t0[2].cells[3].textContent = reserva.telefono || '';
+  t0[2].cells[5].textContent = reserva.numPersonas || '';
+  t0[2].cells[7].textContent = reserva.nombreCartera || '';
+  t0[3].cells[1].textContent = reserva.codigo || '';
+  t0[3].cells[3].textContent = reserva.contactoComercial || '';
+  t0[3].cells[5].textContent = reserva.contactoEvento || '';
+  t0[3].cells[7].textContent = reserva.telContacto || '';
+  t0[4].cells[1].textContent = reserva.responsablePago || '';
+  t0[4].cells[3].textContent = reserva.dui || '';
+  t0[4].cells[5].textContent = reserva.nit || '';
+  t0[4].cells[7].textContent = reserva.ejecutivaVentas || '';
+  t0[5].cells[1].textContent = reserva.telEjecutiva || '';
+  t0[5].cells[3].textContent = reserva.celEjecutiva || '';
 
-        const t1 = document.querySelectorAll('table')[1].rows;
-        t1[0].cells[1].textContent = reserva.facturarA || '';
-        t1[0].cells[3].textContent = reserva.telefono || '';
-        t1[0].cells[5].textContent = reserva.numPersonas || '';
-        t1[1].cells[1].textContent = reserva.nombreCartera || '';
-        t1[1].cells[3].textContent = reserva.codigo || '';
-        t1[2].cells[1].textContent = reserva.contactoComercial || '';
-        t1[2].cells[3].textContent = reserva.contactoEvento || '';
-        t1[2].cells[5].textContent = reserva.telContacto || '';
-        t1[3].cells[1].textContent = reserva.responsablePago || '';
-        t1[3].cells[3].textContent = reserva.dui || '';
-        t1[3].cells[5].textContent = reserva.nit || '';
-        t1[4].cells[1].textContent = reserva.ejecutivaVentas || '';
-        t1[4].cells[3].textContent = reserva.telEjecutiva || '';
-        t1[4].cells[5].textContent = reserva.celEjecutiva || '';
+  document.getElementById('montajeData').textContent =
+    (reserva.montaje || []).map(m => `${m.tipo}: ${m.cantidad}`).join(', ') || '';
+  document.getElementById('cocinaData').textContent =
+    (reserva.cocina || []).map(c => `${c.item}: ${c.cantidad}`).join(', ') || '';
 
-        // MONTAJE Y COCINA
-        if (reserva.montaje && reserva.montaje.length)
-            document.getElementById('montajeData').textContent = reserva.montaje.map(m => `${m.tipo}: ${m.cantidad}`).join(', ');
-        if (reserva.cocina && reserva.cocina.length)
-            document.getElementById('cocinaData').textContent = reserva.cocina.map(c => `${c.item}: ${c.cantidad}`).join(', ');
-
-        // MANTENIMIENTO
-        const tablaM = document.getElementById('tablaMantenimiento');
-        if (reserva.mantenimiento && reserva.mantenimiento.length) {
-            while (tablaM.rows.length > 1) tablaM.deleteRow(1);
-            for (let i = 0; i < reserva.mantenimiento.length; i += 2) {
-                const row = tablaM.insertRow();
-                const m1 = reserva.mantenimiento[i];
-                const m2 = reserva.mantenimiento[i + 1];
-                row.insertCell().textContent = m1?.n || '';
-                row.insertCell().textContent = m1?.fecha || '';
-                row.insertCell().textContent = m1?.valor || '';
-                row.insertCell().textContent = m2?.n || '';
-                row.insertCell().textContent = m2?.fecha || '';
-                row.insertCell().textContent = m2?.valor || '';
-            }
+  if (reserva.mantenimiento && reserva.mantenimiento.length) {
+    reserva.mantenimiento.forEach((m) => {
+      const n = m.n;
+      const datoCell = document.getElementById(`dato${n}`);
+      if (datoCell) datoCell.textContent = m.dato || '';
+      const fechaCell = document.getElementById(`fecha${n}`);
+      if (fechaCell) {
+        if (m.fecha && m.fecha !== 'Invalid Date') {
+          const f = new Date(m.fecha);
+          if (!isNaN(f)) {
+            fechaCell.textContent = `${String(f.getDate()).padStart(2, '0')}/${String(f.getMonth() + 1).padStart(2, '0')}/${f.getFullYear()}`;
+          } else fechaCell.textContent = m.fecha;
         }
-// OBSERVACIONES DE MANTENIMIENTO
-if (reserva.manObservaciones) {
-    document.getElementById('manObservacionesText').textContent = reserva.manObservaciones;
-}
+      }
+      const valorCell = document.getElementById(`valor${n}`);
+      if (valorCell) valorCell.textContent = m.valor ? `$${parseFloat(m.valor).toFixed(2)}` : '';
+    });
+  }
 
-        // PRODUCTOS Y SERVICIOS + TOTAL
-        const tablaP = document.getElementById('productosServicios').rows;
-        let total = 0;
-        if (reserva.productos && reserva.productos.length) {
-            reserva.productos.forEach((p, i) => {
-                if (i + 1 < tablaP.length) {
-                    tablaP[i + 1].cells[0].textContent = p.codigo || '';
-                    tablaP[i + 1].cells[1].textContent = p.descripcion || '';
-                    tablaP[i + 1].cells[2].textContent = p.cantidad || '';
-                    tablaP[i + 1].cells[3].textContent = p.precio || '';
-                    const valor = parseFloat(p.valor || (p.cantidad * p.precio)) || 0;
-                    tablaP[i + 1].cells[4].textContent = valor.toFixed(2);
-                    total += valor;
-                }
-            });
-        }
-        document.getElementById('totalOrden').textContent = `$${total.toFixed(2)}`;
-    }
-}
+  document.getElementById('manObservacionesText').textContent = reserva.manObservaciones || '';
+
+  const tablaP = document.getElementById('productosServicios').tBodies[0];
+  tablaP.innerHTML = '';
+  let total = 0;
+  if (reserva.productos && reserva.productos.length) {
+    reserva.productos.forEach(p => {
+      const row = tablaP.insertRow();
+      row.insertCell().textContent = p.codigo || '';
+      row.insertCell().textContent = p.descripcion || '';
+      row.insertCell().textContent = p.cantidad || '';
+      row.insertCell().textContent = p.precio || '';
+      const val = parseFloat(p.valor || p.cantidad * p.precio) || 0;
+      row.insertCell().textContent = `$${val.toFixed(2)}`;
+      total += val;
+    });
+  }
+  document.getElementById('totalOrden').textContent = `$${total.toFixed(2)}`;
+};
 </script>
 </body>
 </html>
+
