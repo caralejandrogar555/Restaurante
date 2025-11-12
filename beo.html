@@ -441,13 +441,30 @@ function guardarDatos() {
 // FUNCIONES AUXILIARES
 // =======================
 const STORAGE_KEY = 'reservas';
-function getReservas() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-function setReservas(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
-// Reiniciar contador manualmente si deseas volver a 001
-// Descomenta la siguiente línea cuando quieras reiniciar
-// localStorage.setItem('contadorBEO', '1');
-let contador = parseInt(localStorage.getItem('contadorBEO') || '1', 10);
-document.getElementById('numReserva').value = String(contador).padStart(3, '0');
+
+// Leer y guardar reservas en localStorage
+function getReservas() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function setReservas(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+// Reiniciar contador MANUALMENTE una sola vez para iniciar en 0001
+if (!localStorage.getItem('contadorBEO')) {
+  localStorage.setItem('contadorBEO', '1'); // ← inicia en 1 la primera vez
+}
+
+// Obtener contador actual y asignarlo al campo “N° de Reserva”
+let contador = parseInt(localStorage.getItem('contadorBEO'), 10);
+document.getElementById('numReserva').value = String(contador).padStart(4, '0');
+
+// Función para incrementar el contador cuando se guarda un nuevo BEO
+function incrementarContadorBEO() {
+  contador++;
+  localStorage.setItem('contadorBEO', contador.toString());
+}
 
 // =======================
 // FORMATOS
@@ -658,5 +675,6 @@ document.getElementById('beoForm').addEventListener('submit', function (ev) {
 
 </body>
 </html>
+
 
 
