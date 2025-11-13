@@ -464,7 +464,7 @@ function reiniciarContador() {
 }
 
 // =======================
-// FUNCIONES AUXILIARES (sin cambios)
+// FUNCIONES AUXILIARES
 // =======================
 const STORAGE_KEY = 'reservas';
 
@@ -474,7 +474,7 @@ function setReservas(arr) { localStorage.setItem(STORAGE_KEY, JSON.stringify(arr
 function formatTelefono(input) {
   input.addEventListener('input', () => {
     let v = input.value.replace(/\D/g, '');
-    if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4, 8);
+    if (v.length > 4) v = v.slice(0,4) + '-' + v.slice(4,8);
     input.value = v;
   });
 }
@@ -482,7 +482,7 @@ function formatTelefono(input) {
 function formatDUI(input) {
   input.addEventListener('input', () => {
     let v = input.value.replace(/\D/g, '');
-    if (v.length > 8) v = v.slice(0, 8) + '-' + v.slice(8, 9);
+    if (v.length > 8) v = v.slice(0,8) + '-' + v.slice(8,9);
     input.value = v;
   });
 }
@@ -503,47 +503,56 @@ document.getElementById('pagoAdelantado').addEventListener('input', calcularPend
 window.addEventListener('DOMContentLoaded', calcularPendiente);
 
 // Funciones de tablas dinámicas (Montaje, Cocina, Productos, Mantenimiento)
-function crearBotonEliminar(onclick) { const btn = document.createElement('button'); btn.textContent='Eliminar'; btn.type='button'; btn.onclick=onclick; return btn; }
+function crearBotonEliminar(onclick) {
+  const btn = document.createElement('button');
+  btn.textContent = 'Eliminar';
+  btn.type = 'button';
+  btn.onclick = onclick;
+  return btn;
+}
 
 function agregarMontaje() {
   const tipo = document.getElementById('montajeTipo').value;
   const cant = parseInt(document.getElementById('montajeCantidad').value)||0;
-  if(!tipo||cant<=0){alert('Selecciona tipo y cantidad válida');return;}
-  const tbody=document.querySelector('#tablaMontaje tbody');
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`;
-  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
+  if (!tipo || cant <= 0) { alert('Selecciona tipo y cantidad válida'); return; }
+  const tbody = document.querySelector('#tablaMontaje tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${tipo}</td><td>${cant}</td>`;
+  const tdAcc = document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-  document.getElementById('montajeTipo').value='';
-  document.getElementById('montajeCantidad').value='';
+  document.getElementById('montajeTipo').value = '';
+  document.getElementById('montajeCantidad').value = '';
 }
 
 function agregarCocina() {
-  const tipo=document.getElementById('cocinaTipo').value;
-  const cant=parseInt(document.getElementById('cocinaCantidad').value)||0;
-  if(!tipo||cant<=0){alert('Selecciona item y cantidad válida');return;}
-  const tbody=document.querySelector('#tablaCocina tbody');
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${tipo}</td><td>${cant}</td>`;
-  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
+  const tipo = document.getElementById('cocinaTipo').value;
+  const cant = parseInt(document.getElementById('cocinaCantidad').value)||0;
+  if (!tipo || cant <= 0) { alert('Selecciona item y cantidad válida'); return; }
+  const tbody = document.querySelector('#tablaCocina tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${tipo}</td><td>${cant}</td>`;
+  const tdAcc = document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-  document.getElementById('cocinaTipo').value='';
-  document.getElementById('cocinaCantidad').value='';
+  document.getElementById('cocinaTipo').value = '';
+  document.getElementById('cocinaCantidad').value = '';
 }
 
 function agregarProducto() {
-  const cod=document.getElementById('prodCodigo').value.trim();
-  const desc=document.getElementById('prodDesc').value.trim();
-  const cant=parseFloat(document.getElementById('prodCant').value)||0;
-  const precio=parseFloat(document.getElementById('prodPrecio').value)||0;
-  if(!desc||cant<=0||precio<=0){alert('Llena correctamente el producto');return;}
-  const val=(cant*precio).toFixed(2);
-  const tbody=document.querySelector('#tablaProductos tbody');
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${cod}</td><td>${desc}</td><td>${cant}</td><td>${precio.toFixed(2)}</td><td>${val}</td>`;
-  const tdAcc=document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
+  const cod = document.getElementById('prodCodigo').value.trim();
+  const desc = document.getElementById('prodDesc').value.trim();
+  const cant = parseFloat(document.getElementById('prodCant').value)||0;
+  const precio = parseFloat(document.getElementById('prodPrecio').value)||0;
+  if (!desc || cant <= 0 || precio <= 0) { alert('Llena correctamente el producto'); return; }
+  const val = (cant * precio).toFixed(2);
+  const tbody = document.querySelector('#tablaProductos tbody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${cod}</td><td>${desc}</td><td>${cant}</td><td>${precio.toFixed(2)}</td><td>${val}</td>`;
+  const tdAcc = document.createElement('td'); tdAcc.appendChild(crearBotonEliminar(()=>tr.remove())); tr.appendChild(tdAcc);
   tbody.appendChild(tr);
-  document.getElementById('prodCodigo').value=''; document.getElementById('prodDesc').value=''; document.getElementById('prodCant').value=''; document.getElementById('prodPrecio').value='';
+  document.getElementById('prodCodigo').value = '';
+  document.getElementById('prodDesc').value = '';
+  document.getElementById('prodCant').value = '';
+  document.getElementById('prodPrecio').value = '';
 }
 
 // =======================
@@ -551,16 +560,19 @@ function agregarProducto() {
 // =======================
 document.getElementById('beoForm').addEventListener('submit', function(ev){
   ev.preventDefault();
+
   const camposObligatorios=['fechaRegistro','fechaEvento','horaInicio','horaFin','salon','tipoEvento','facturarA','telefono'];
   const faltantes=[];
-  camposObligatorios.forEach(id=>{if(!document.getElementById(id).value.trim()) faltantes.push(id);});
-  if(faltantes.length>0){
-    const nombres=faltantes.map(id=>document.querySelector(`label[for="${id}"]`)?.textContent||id).join(', ');
-    const confirmar=confirm(`⚠️ No has completado los siguientes campos: ${nombres}\n\n¿Deseas guardar de todos modos?`);
-    if(!confirmar){document.getElementById(faltantes[0]).focus();return;}
+  camposObligatorios.forEach(id => {
+    if (!document.getElementById(id).value.trim()) faltantes.push(id);
+  });
+  if (faltantes.length>0) {
+    const nombres=faltantes.map(id => document.querySelector(`label[for="${id}"]`)?.textContent||id).join(', ');
+    const confirmar = confirm(`⚠️ No has completado los siguientes campos: ${nombres}\n\n¿Deseas guardar de todos modos?`);
+    if (!confirmar) { document.getElementById(faltantes[0]).focus(); return; }
   }
 
-  const reserva={
+  const reserva = {
     id: String(parseInt(localStorage.getItem('contadorBEO'),10)).padStart(3,'0'),
     fechaRegistro: document.getElementById('fechaRegistro').value,
     fechaEvento: document.getElementById('fechaEvento').value,
@@ -586,14 +598,51 @@ document.getElementById('beoForm').addEventListener('submit', function(ev){
     montoReserva: parseFloat(document.getElementById('montoReserva').value)||0,
     pagoAdelantado: parseFloat(document.getElementById('pagoAdelantado').value)||0,
     montoPendiente: parseFloat(document.getElementById('montoPendiente').value)||0,
-    montaje: Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr=>({tipo:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
-    cocina: Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr=>({item:tr.children[0].textContent,cantidad:tr.children[1].textContent})),
-    productos: Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr=>({codigo:tr.children[0].textContent,descripcion:tr.children[1].textContent,cantidad:tr.children[2].textContent,precio:tr.children[3].textContent,valor:tr.children[4].textContent})),
-    manObservaciones: document.getElementById('manObservaciones').value||'',
+    montaje: Array.from(document.querySelectorAll('#tablaMontaje tbody tr')).map(tr => ({
+      tipo: tr.children[0].textContent.trim(),
+      cantidad: tr.children[1].textContent.trim()
+    })),
+    cocina: Array.from(document.querySelectorAll('#tablaCocina tbody tr')).map(tr => ({
+      item: tr.children[0].textContent.trim(),
+      cantidad: tr.children[1].textContent.trim()
+    })),
+    productos: Array.from(document.querySelectorAll('#tablaProductos tbody tr')).map(tr => ({
+      codigo: tr.children[0].textContent.trim(),
+      descripcion: tr.children[1].textContent.trim(),
+      cantidad: tr.children[2].textContent.trim(),
+      precio: tr.children[3].textContent.trim(),
+      valor: tr.children[4].textContent.trim()
+    })),
+    manObservaciones: document.getElementById('manObservaciones').value || '',
+    mantenimiento: Array.from(document.querySelectorAll('#tablaMantenimiento tbody tr')).map(tr => ({
+      n: tr.children[0].textContent.trim(),
+      dato: tr.children[1].textContent.trim(),
+      fecha: tr.children[2].querySelector('input')?.value || '',
+      valor: tr.children[3].querySelector('input')?.value || ''
+    })),
     createdAt: new Date().toISOString()
   };
 
-  const arr=getReservas();
+  const arr = getReservas();
+
+  // === VERIFICAR SI YA EXISTE UNA RESERVA CON MISMA FECHA, HORA Y SALÓN ===
+  const conflicto = arr.find(r =>
+    r.fechaEvento === reserva.fechaEvento &&
+    r.salon.toLowerCase() === reserva.salon.toLowerCase() &&
+    (
+      // Verifica si hay traslape de horarios
+      (reserva.horaInicio >= r.horaInicio && reserva.horaInicio < r.horaFin) ||
+      (reserva.horaFin > r.horaInicio && reserva.horaFin <= r.horaFin) ||
+      (reserva.horaInicio <= r.horaInicio && reserva.horaFin >= r.horaFin)
+    )
+  );
+
+  if (conflicto) {
+    alert(`⚠️ El salón "${reserva.salon}" ya está reservado el ${reserva.fechaEvento} entre ${conflicto.horaInicio} y ${conflicto.horaFin}.\n\nPor favor selecciona otra fecha u horario.`);
+    return; // ❌ Cancela el guardado
+  }
+
+  // === SI NO HAY CONFLICTO, GUARDA NORMAL ===
   arr.push(reserva);
   setReservas(arr);
   localStorage.setItem("datosBEO", JSON.stringify(reserva));
@@ -602,12 +651,14 @@ document.getElementById('beoForm').addEventListener('submit', function(ev){
   incrementarContadorBEO();
 
   alert('✅ BEO guardado correctamente.');
-  window.location.href=`formulario.html?id=${reserva.id}`;
+  window.location.href = 'formulario.html';
 });
-</script>
 
+</script>
 </body>
 </html>
+
+
 
 
 
